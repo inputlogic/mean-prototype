@@ -4,6 +4,7 @@
   "description": "Project base for Node, Express, MySQL projects",
   "main": "index.js",
   "scripts": {
+    "client": "scripts/client.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -16,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/inputlogic/prototype/issues"
   },
-  "homepage": "https://github.com/inputlogic/prototype#readme"
+  "homepage": "https://github.com/inputlogic/prototype#readme",
+  "devDependencies": {
+    "jshint": "^2.8.0",
+    "orchestrator": "^0.3.7",
+    "yargs": "^3.31.0"
+  }
 }
