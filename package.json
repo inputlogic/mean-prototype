@@ -1,0 +1,20 @@
+{
+  "name": "prototype",
+  "version": "1.0.0",
+  "description": "Project base for Node, Express, MySQL projects",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/inputlogic/prototype.git"
+  },
+  "keywords": [],
+  "author": "Input Logic, Inc.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/inputlogic/prototype/issues"
+  },
+  "homepage": "https://github.com/inputlogic/prototype#readme"
+}
