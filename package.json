@@ -27,6 +27,7 @@
     "karma-mocha": "^0.2.1",
     "mocha": "^2.3.4",
     "orchestrator": "^0.3.7",
+    "protractor": "^3.0.0",
     "yargs": "^3.31.0"
   }
 }
