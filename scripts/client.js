@@ -12,7 +12,7 @@ var tasks = new Orchestrator();
 tasks.add('lint', function(done) {
   var exec = require('child_process').exec;
   var cmd = 'jshint client/**';
-  exec(cmd, opts, cb.bind(null, done));
+  exec(cmd, opts, logger(done));
 });
 
 // Run the specified task
@@ -24,11 +24,13 @@ tasks.start(task, function(err) {
   }
 });
 
-function cb(done, err, stdout) {
-  if (err) {
-    console.error(task, stdout); 
-  } else {
-    console.log(stdout);
-  }
-  done(err);
+function logger(done) {
+  return function(err, stdout) {
+    if (err) {
+      console.error(task, stdout); 
+    } else {
+      console.log(stdout);
+    }
+    done(err);
+  };
 }
