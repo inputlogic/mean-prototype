@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/inputlogic/prototype#readme",
   "devDependencies": {
+    "angular": "^1.4.8",
+    "browserify": "^12.0.1",
     "chai": "^3.4.1",
     "jshint": "^2.8.0",
     "karma": "^0.13.15",
