@@ -10,6 +10,7 @@ auth.use(passport.session());
 
 module.exports = function(knex) {
 
+  // Logic for authenticating user
   passport.use(new LocalStrategy({
       usernameField: 'email',
       passwordField: 'password'
@@ -28,6 +29,8 @@ module.exports = function(knex) {
               return done(null, false, { message: 'Incorrect password.' });
             }
 
+            delete user.password;
+
             return done(null, user);
           });
         });
@@ -38,13 +41,14 @@ module.exports = function(knex) {
     done(null, user.id);
   });
 
+  // Get user info from request session
   passport.deserializeUser(function(id, done) {
-    knex('users').where({id: id}).select('*')
-      .then(function(user) {
-        done(null, user);
+    knex('users').where({id: id}).select('id', 'name', 'email', 'created_at', 'updated_at')
+      .then(function(users) {
+        done(null, users[0]);
       })
       .catch(function(err) {
-        done(err, user);
+        done(err, null);
       });
   });
 
@@ -55,6 +59,14 @@ module.exports = function(knex) {
       // `req.user` contains the authenticated user.
       res.send('success');
     });
+
+  // Middleware to check if request is authenticated
+  auth.use(function(req, res, next) {
+    if (!req.user) {
+      return res.status(401).send('Unauthorized');
+    }
+    next();
+  });
 
   return auth;
 };

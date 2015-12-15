@@ -1,11 +1,15 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var bcrypt = require('bcrypt');
+var cookieParser = require('cookie-parser')
+var session = require('express-session');
 
 var app = express();
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(cookieParser());
+app.use(session({secret: "This is a secret", resave: true, saveUninitialized: true}));
 
 // Place database connection values in this file
 app.config = require('./config.js');
@@ -44,7 +48,16 @@ app.post('/', function(req, res) {
   });
 });
 
-app.use('/auth', require('./middleware/auth.js')(knex));
+app.use(require('./middleware/auth.js')(knex));
+
+// Authenticated requests down here
+
+app.get('/me', function(req, res) {
+  res.send(req.user);
+});
+
+
+// --------------------------
 
 var port = process.env.PORT || 3000;
 
