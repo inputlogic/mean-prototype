@@ -11,11 +11,32 @@ var tasks = new Orchestrator();
 // Define our tasks
 
 tasks.add('default', ['build']);
-tasks.add('build', ['clean', 'assets', 'js']);
+tasks.add('build', ['clean', 'assets', 'build-js']);
+tasks.add('watch', ['watch-js']);
 
-tasks.add('js', ['lint', 'clean'], function(done) {
+tasks.add('build-js', ['lint', 'clean'], function(done) {
   var cmd = 'browserify client/app.js | uglifyjs -mc > public/bundle.js';
   exec(cmd, opts, logger(done));
+});
+
+tasks.add('watch-js', function(done) {
+  var fs = require('fs');
+  var browserify = require('browserify');
+  var watchify = require('watchify');
+  var b = browserify({
+    entries: ['client/app.js'],
+    cache: {},
+    packageCache: {},
+    plugin: [watchify]
+  });
+   
+  b.on('update', bundle);
+  b.on('log', console.log);
+  bundle();
+   
+  function bundle() {
+    b.bundle().pipe(fs.createWriteStream('public/bundle.js'));
+  }
 });
 
 tasks.add('assets', ['clean'], function(done) {
