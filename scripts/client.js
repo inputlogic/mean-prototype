@@ -44,6 +44,22 @@ tasks.add('watch-js', function(done) {
   }
 });
 
+tasks.add('watch-css', function(done) {
+  var watch = require('watch');
+  var cmd = 'lessc -x client/styles/app.less public/bundle.css';
+  watch.createMonitor('client/styles', function (monitor) {
+    monitor.on("created", function (f, stat) {
+      exec(cmd, opts, logger());
+    });
+    monitor.on("changed", function (f, curr, prev) {
+      exec(cmd, opts, logger());
+    });
+    monitor.on("removed", function (f, stat) {
+      exec(cmd, opts, logger());
+    });
+  })
+});
+
 tasks.add('assets', ['clean'], function(done) {
   var cmd = 'cp client/index.html public/index.html';
   // @TODO: Copy an 'assets/' folder for images, fonts, etc.
@@ -98,6 +114,6 @@ function logger(done) {
     } else {
       console.log(stdout || '.');
     }
-    done(err);
+    if (done) { done(err); }
   };
 }

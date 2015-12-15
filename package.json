@@ -33,6 +33,7 @@
     "orchestrator": "^0.3.7",
     "protractor": "^3.0.0",
     "uglifyjs": "^2.4.10",
+    "watch": "^0.16.0",
     "watchify": "^3.6.1",
     "yargs": "^3.31.0"
   }
