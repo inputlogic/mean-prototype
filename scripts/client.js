@@ -39,14 +39,21 @@ tasks.add('rm', function(done) {
 
 tasks.add('server', function(done) {
   var static = require('node-static');
-  var file = new static.Server('./public');
-  require('http').createServer(function(request, response) {
-    request.addListener('end', function() {
-      file.serve(request, response);
-    }).resume();
-  }).listen(8000);
-  console.log('Server started on port 8000');
-  done();
+  var fs = require('fs');
+  fs.open('./public', 'r', function(err) {
+    if (err && err.code === 'ENOENT') {
+      console.error('./public does not exist! Run "client build" first.');
+    } else {
+      var file = new static.Server('./public');
+      require('http').createServer(function(request, response) {
+        request.addListener('end', function() {
+          file.serve(request, response);
+        }).resume();
+      }).listen(8000);
+      console.log('Server started on port 8000');
+    }
+    done(err);
+  });
 });
 
 // Run the specified task
