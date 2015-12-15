@@ -1,6 +1,5 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var passport = require('passport');
 var bcrypt = require('bcrypt');
 
 var app = express();
@@ -18,10 +17,10 @@ var knex = require('knex')({
 
 require('./models.js')(app, knex);
 
-app.get('/', function(req, res) {
-  knex('users').select('*')
+app.get('/users', function(req, res) {
+  knex('users').select('id', 'name', 'email', 'created_at', 'updated_at')
     .then(function(result) {
-      res.json(result);
+      res.send(result);
     });
 });
 
@@ -37,21 +36,15 @@ app.post('/', function(req, res) {
       password: hash
     })
       .then(function(result) {
-        res.json(result);
+        res.send(result);
       })
       .catch(function(err) {
-        res.status(400).send(err);
+        res.status(400).send(err); // Todo: better error handling
       });
   });
 });
 
-app.post('/login',
-  passport.authenticate('local'),
-  function(req, res) {
-    // If this function gets called, authentication was successful.
-    // `req.user` contains the authenticated user.
-    res.redirect('/users/' + req.user.username);
-  });
+app.use('/auth', require('./middleware/auth.js')(knex));
 
 var port = process.env.PORT || 3000;
 
