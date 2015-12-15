@@ -1,5 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var passport = require('passport');
+var bcrypt = require('bcrypt');
 
 var app = express();
 
@@ -24,14 +26,32 @@ app.get('/', function(req, res) {
 });
 
 app.post('/', function(req, res) {
-  knex('users').insert({name: req.body.name, email: req.body.email, created_at: new Date(), updated_at: new Date()})
-    .then(function(result) {
-      res.json(result);
+
+  // Hash password and store in database
+  bcrypt.hash(req.body.password, 10, function(err, hash) {
+    knex('users').insert({
+      name: req.body.name,
+      email: req.body.email,
+      created_at: new Date(),
+      updated_at: new Date(),
+      password: hash
     })
-    .catch(function(err) {
-      res.status(400).send(err);
-    });
+      .then(function(result) {
+        res.json(result);
+      })
+      .catch(function(err) {
+        res.status(400).send(err);
+      });
+  });
 });
+
+app.post('/login',
+  passport.authenticate('local'),
+  function(req, res) {
+    // If this function gets called, authentication was successful.
+    // `req.user` contains the authenticated user.
+    res.redirect('/users/' + req.user.username);
+  });
 
 var port = process.env.PORT || 3000;
 
