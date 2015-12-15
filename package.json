@@ -27,6 +27,7 @@
     "karma-browserify": "^4.4.2",
     "karma-chai": "^0.1.0",
     "karma-mocha": "^0.2.1",
+    "less": "^2.5.3",
     "mocha": "^2.3.4",
     "node-static": "^0.7.7",
     "orchestrator": "^0.3.7",

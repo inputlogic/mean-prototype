@@ -11,11 +11,16 @@ var tasks = new Orchestrator();
 // Define our tasks
 
 tasks.add('default', ['build']);
-tasks.add('build', ['clean', 'assets', 'build-js']);
+tasks.add('build', ['assets', 'build-js', 'build-css']);
 tasks.add('watch', ['watch-js']);
 
-tasks.add('build-js', ['lint', 'clean'], function(done) {
+tasks.add('build-js', ['lint'], function(done) {
   var cmd = 'browserify client/app.js | uglifyjs -mc > public/bundle.js';
+  exec(cmd, opts, logger(done));
+});
+
+tasks.add('build-css', function(done) {
+  var cmd = 'lessc -x client/styles/app.less public/bundle.css';
   exec(cmd, opts, logger(done));
 });
 
