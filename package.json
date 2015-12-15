@@ -28,8 +28,10 @@
     "karma-chai": "^0.1.0",
     "karma-mocha": "^0.2.1",
     "mocha": "^2.3.4",
+    "node-static": "^0.7.7",
     "orchestrator": "^0.3.7",
     "protractor": "^3.0.0",
+    "uglifyjs": "^2.4.10",
     "yargs": "^3.31.0"
   }
 }
