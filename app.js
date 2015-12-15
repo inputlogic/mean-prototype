@@ -7,7 +7,7 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 // Place database connection values in this file
-app.config = require('./config.json');
+app.config = require('./config.js');
 
 var knex = require('knex')({
   client: 'mysql2',
