@@ -17,7 +17,7 @@ module.exports = function(knex) {
         password: hash
       })
         .then(function(result) {
-          res.send(result);
+          res.status(201).send(result);
         })
         .catch(function(err) {
           res.status(400).send(err); // Todo: better error handling
@@ -54,6 +54,21 @@ module.exports = function(knex) {
       }
     });
 
+  users.delete('/me', 
+    require('../middleware/isLoggedIn.js'),
+    function(req, res) {
+      knex('users')
+        .where(req.user)
+        .del()
+        .then(function() {
+          res.send('deleted');
+        })
+        .catch(function(err) {
+          res.status(500).send(err);
+        });
+
+    });
+
   function updateUser(id, info, callback) {
     knex('users')
       .where({id: id})
@@ -62,6 +77,7 @@ module.exports = function(knex) {
         return knex('users').where({id: id}).select('id', 'name', 'email', 'created_at', 'updated_at');
       })
       .then(function(users) {
+        req.logout();
         callback(null, users[0]);
       })
       .catch(function(err) {
