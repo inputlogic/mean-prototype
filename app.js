@@ -21,10 +21,6 @@ nunjucks.configure(__dirname + app.config.views, {
   express: app
 });
 
-app.get('/*', function (req, res) { // Example endpoint for serving client views
-  res.render('index.html', {/* Merge tag values here */});
-});
-
 var knex = require('knex')({
   client: 'mysql2',
   connection: app.config.connection
@@ -37,6 +33,10 @@ require('./models.js')(knex); // Models loader... TODO: maybe flesh out and move
 app.use(require('./modules/auth.js')(knex)); // Module to handle logins
 
 app.use(require('./modules/users.js')(knex)); // Example module (aka controller)
+
+app.get('/*', function (req, res) { // Example endpoint for serving client views
+  res.render('index.html', {/* Merge tag values here */});
+});
 
 var port = process.env.PORT || 3000;
 
