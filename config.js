@@ -5,5 +5,6 @@ module.exports = {
     password: "express",
     database: "prototype"
   },
-  views: './' // Path to templates directory
+  views: './', // Path to templates directory
+  sessionSecret: 'This is a secret'
 };

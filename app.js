@@ -7,13 +7,13 @@ var nunjucks = require('nunjucks');
 
 var app = express();
 
+// Place database connection values in this file
+app.config = require('./config.js');
+
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(cookieParser());
-app.use(session({secret: "This is a secret", resave: true, saveUninitialized: true}));
-
-// Place database connection values in this file
-app.config = require('./config.js');
+app.use(session({secret: app.config.sessionSecret, resave: true, saveUninitialized: true}));
 
 // Nunjucks rendering for HTML templates
 nunjucks.configure(__dirname + app.config.views, {
