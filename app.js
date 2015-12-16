@@ -25,7 +25,7 @@ require('./models.js')(knex); // Models loader... TODO: maybe flesh out and move
 
 app.use(require('./modules/auth.js')(knex)); // Module to handle logins
 
-app.use('/users', require('./modules/users.js')(knex)); // Example module (aka controller)
+app.use(require('./modules/users.js')(knex)); // Example module (aka controller)
 
 var port = process.env.PORT || 3000;
 
