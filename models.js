@@ -2,7 +2,7 @@
 
 var fs = require('fs');
 
-module.exports = function(app, knex) {
+module.exports = function(knex) {
 
   var files = fs.readdirSync(__dirname + '/models');
 

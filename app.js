@@ -19,7 +19,9 @@ var knex = require('knex')({
   connection: app.config.connection
 });
 
-require('./models.js')(app, knex);
+require('./models.js')(knex); // Models loader... TODO: maybe flesh out and move into own npm package
+
+// TODO: discuss middleware loader
 
 app.use(require('./modules/auth.js')(knex)); // Module to handle logins
 
