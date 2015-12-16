@@ -21,41 +21,9 @@ var knex = require('knex')({
 
 require('./models.js')(app, knex);
 
-app.get('/users', function(req, res) {
-  knex('users').select('id', 'name', 'email', 'created_at', 'updated_at')
-    .then(function(result) {
-      res.send(result);
-    });
-});
-
-app.post('/', function(req, res) {
-
-  // Hash password and store in database
-  bcrypt.hash(req.body.password, 10, function(err, hash) {
-    knex('users').insert({
-      name: req.body.name,
-      email: req.body.email,
-      created_at: new Date(),
-      updated_at: new Date(),
-      password: hash
-    })
-      .then(function(result) {
-        res.send(result);
-      })
-      .catch(function(err) {
-        res.status(400).send(err); // Todo: better error handling
-      });
-  });
-});
-
 app.use(require('./modules/auth.js')(knex)); // Module to handle logins
 
-app.get('/me',
-  require('./middleware/isLoggedIn.js'),
-  function(req, res) {
-    res.send(req.user);
-  }
-);
+app.use('/users', require('./modules/users.js')(knex)); // Example module (aka controller)
 
 var port = process.env.PORT || 3000;
 
