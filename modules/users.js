@@ -31,5 +31,43 @@ module.exports = function(knex) {
       res.send(req.user);
     });
 
+  users.put('/me',
+    require('../middleware/isLoggedIn.js'),
+    function(req, res) {
+
+      if (req.body.password) {
+        bcrypt.hash(req.body.password, 10, function(err, hash) {
+          req.body.password = hash;
+
+          updateUser(req.user.id, req.body, done);
+        });
+      }
+      else {
+        updateUser(req.user.id, req.body, done);
+      }
+
+      function done(err, user) {
+        if (err) {
+          return res.status(400).send(err);
+        }
+        return res.send(user);
+      }
+    });
+
+  function updateUser(id, info, callback) {
+    knex('users')
+      .where({id: id})
+      .update(info)
+      .then(function() {
+        return knex('users').where({id: id}).select('id', 'name', 'email', 'created_at', 'updated_at');
+      })
+      .then(function(users) {
+        callback(null, users[0]);
+      })
+      .catch(function(err) {
+        callback(err, null);
+      });
+  }
+
   return users;
 };
