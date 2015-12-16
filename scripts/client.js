@@ -13,6 +13,7 @@ var tasks = new Orchestrator();
 tasks.add('default', ['build']);
 tasks.add('build', ['assets', 'build-js', 'build-css']);
 tasks.add('watch', ['watch-js']);
+tasks.add('test', ['lint', 'karma']);
 
 tasks.add('build-js', ['lint'], function(done) {
   var cmd = 'browserify client/app.js | uglifyjs -mc > public/bundle.js';
@@ -64,6 +65,21 @@ tasks.add('assets', ['clean'], function(done) {
   var cmd = 'cp client/index.html public/index.html';
   // @TODO: Copy an 'assets/' folder for images, fonts, etc.
   exec(cmd, opts, logger(done));
+});
+
+tasks.add('karma', ['lint'], function(done) {
+  var spawn = require('child_process').spawn;
+  var cmd  = spawn('karma', ['start', 'karma.conf.js']);
+  cmd.stdout.on('data', function(data) {
+    console.log(''+data);
+  });
+  cmd.stderr.on('data', function(data) {
+    console.log('stderr', data);
+  });
+  cmd.on('exit', function(code) {
+    console.log('exit code: ' + code);
+    done();
+  });
 });
 
 tasks.add('lint', function(done) {
