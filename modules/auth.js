@@ -60,13 +60,5 @@ module.exports = function(knex) {
       res.send('success');
     });
 
-  // Middleware to check if request is authenticated
-  auth.use(function(req, res, next) {
-    if (!req.user) {
-      return res.status(401).send('Unauthorized');
-    }
-    next();
-  });
-
   return auth;
 };

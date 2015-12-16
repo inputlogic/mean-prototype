@@ -48,16 +48,14 @@ app.post('/', function(req, res) {
   });
 });
 
-app.use(require('./middleware/auth.js')(knex));
+app.use(require('./modules/auth.js')(knex)); // Module to handle logins
 
-// Authenticated requests down here
-
-app.get('/me', function(req, res) {
-  res.send(req.user);
-});
-
-
-// --------------------------
+app.get('/me',
+  require('./middleware/isLoggedIn.js'),
+  function(req, res) {
+    res.send(req.user);
+  }
+);
 
 var port = process.env.PORT || 3000;
 
