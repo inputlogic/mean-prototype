@@ -60,5 +60,10 @@ module.exports = function(knex) {
       res.send('success');
     });
 
+  auth.get('/logout', function(req, res) {
+    req.logout();
+    res.send('logged out');
+  });
+
   return auth;
 };
