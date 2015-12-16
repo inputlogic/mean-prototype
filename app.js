@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var bcrypt = require('bcrypt');
 var cookieParser = require('cookie-parser')
 var session = require('express-session');
+var nunjucks = require('nunjucks');
 
 var app = express();
 
@@ -13,6 +14,16 @@ app.use(session({secret: "This is a secret", resave: true, saveUninitialized: tr
 
 // Place database connection values in this file
 app.config = require('./config.js');
+
+// Nunjucks rendering for HTML templates
+nunjucks.configure(__dirname + app.config.views, {
+  autoescape: true,
+  express: app
+});
+
+app.get('/*', function (req, res) { // Example endpoint for serving client views
+  res.render('index.html', {/* Merge tag values here */});
+});
 
 var knex = require('knex')({
   client: 'mysql2',

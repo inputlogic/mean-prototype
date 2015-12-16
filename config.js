@@ -4,5 +4,6 @@ module.exports = {
     user: "express",
     password: "express",
     database: "prototype"
-  }
+  },
+  views: './' // Path to templates directory
 };
