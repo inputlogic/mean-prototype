@@ -12,7 +12,7 @@ var tasks = new Orchestrator();
 
 tasks.add('default', ['build']);
 tasks.add('build', ['assets', 'build-js', 'build-css']);
-tasks.add('watch', ['watch-js']);
+tasks.add('watch', ['watch-js', 'watch-css']);
 tasks.add('test', ['lint', 'karma']);
 
 tasks.add('build-js', ['lint'], function(done) {
@@ -50,12 +50,6 @@ tasks.add('watch-css', function(done) {
   })
 });
 
-tasks.add('assets', ['clean'], function(done) {
-  var cmd = 'cp client/index.html public/index.html';
-  // @TODO: Copy an 'assets/' folder for images, fonts, etc.
-  exec(cmd, opts, logger(done));
-});
-
 tasks.add('karma', ['lint'], function(done) {
   spawner('karma', ['start', 'karma.conf.js'], done);
 });
@@ -67,6 +61,12 @@ tasks.add('lint', function(done) {
 
 tasks.add('clean', ['rm'], function(done) {
   exec('mkdir ./public', opts, logger(done));
+});
+
+tasks.add('assets', ['clean'], function(done) {
+  var cmd = 'cp client/index.html public/index.html';
+  // @TODO: Copy an 'assets/' folder for images, fonts, etc.
+  exec(cmd, opts, logger(done));
 });
 
 tasks.add('rm', function(done) {
@@ -117,7 +117,7 @@ function spawner(bin, args, done) {
 function logger(done) {
   return function(err, stdout) {
     if (err) {
-      console.error(task, stdout); 
+      console.error(err); 
     } else {
       console.log(stdout || '.');
     }
