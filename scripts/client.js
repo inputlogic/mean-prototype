@@ -16,7 +16,7 @@ tasks.add('watch', ['watch-js']);
 tasks.add('test', ['lint', 'karma']);
 
 tasks.add('build-js', ['lint'], function(done) {
-  var cmd = 'browserify client/app.js | uglifyjs -mc > public/bundle.js';
+  var cmd = 'browserify client/app.js | uglifyjs -c > public/bundle.js';
   exec(cmd, opts, logger(done));
 });
 
@@ -26,23 +26,12 @@ tasks.add('build-css', function(done) {
 });
 
 tasks.add('watch-js', function(done) {
-  var fs = require('fs');
-  var browserify = require('browserify');
-  var watchify = require('watchify');
-  var b = browserify({
-    entries: ['client/app.js'],
-    cache: {},
-    packageCache: {},
-    plugin: [watchify]
-  });
-   
-  b.on('update', bundle);
-  b.on('log', console.log);
-  bundle();
-   
-  function bundle() {
-    b.bundle().pipe(fs.createWriteStream('public/bundle.js'));
-  }
+  spawner('watchify', [
+    'client/app.js', 
+    '-o', 
+    'public/bundle.js',
+    '-v'
+  ], done);
 });
 
 tasks.add('watch-css', function(done) {
@@ -68,18 +57,7 @@ tasks.add('assets', ['clean'], function(done) {
 });
 
 tasks.add('karma', ['lint'], function(done) {
-  var spawn = require('child_process').spawn;
-  var cmd  = spawn('karma', ['start', 'karma.conf.js']);
-  cmd.stdout.on('data', function(data) {
-    console.log(''+data);
-  });
-  cmd.stderr.on('data', function(data) {
-    console.log('stderr', data);
-  });
-  cmd.on('exit', function(code) {
-    console.log('exit code: ' + code);
-    done();
-  });
+  spawner('karma', ['start', 'karma.conf.js'], done);
 });
 
 tasks.add('lint', function(done) {
@@ -122,6 +100,19 @@ tasks.start(task, function(err) {
     console.log(task, 'completed!');
   }
 });
+
+function spawner(bin, args, done) {
+  var spawn = require('child_process').spawn;
+  var cmd  = spawn(bin, args || []);
+  var buffLog = function(data) { console.log(''+data); };
+
+  cmd.stdout.on('data', buffLog);
+  cmd.stderr.on('data', buffLog);
+  cmd.on('exit', function(code) {
+    console.log('exit code: ' + code);
+    if (typeof done === 'function') done();
+  });
+}
 
 function logger(done) {
   return function(err, stdout) {
