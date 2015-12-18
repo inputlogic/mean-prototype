@@ -21,6 +21,10 @@ Project base for MySQL, Express and Nunjucks built with Node (aka: MENN)
   - `css/`
   - `html/`
   - `js/`
+- `views/`
+  - `users/`
+    - `login.html`
+    - `myProfile.html`
 
 ## Structure Detail
 
@@ -108,12 +112,17 @@ API route example: `POST /api/accounts/:id`
 
 #### `public/`
 
-Contains public content such as HTML views, CSS, Javascript etc. The directory
+Contains public (static) content such as CSS, Javascript etc. The directory
 structure should be self-explanitory ;)
 
+#### `views/`
+
 A modules HTML views should exist here and not in the modules/ directory. HTML
-views should be put inside a directory named after the module.
+views should be put inside a directory named after the module. File names
+should be camel cased.
 
 Example:
 
-`public/html/accounts/dashboard.html`
+`views/accounts/dashboard.html`
+
+`views/accounts/myAccount.html`
