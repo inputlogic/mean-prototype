@@ -1,6 +1,6 @@
 # Prototype
 
-Project base for MySQL, Express and Nunjucks built with Node (aka: MENN)
+Project base for MySQL, Express and Angular built on Node (aka: MEAN)
 
 ## Structure Overview
 
