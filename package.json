@@ -4,8 +4,8 @@
   "description": "Project base for Node, Express, MySQL projects",
   "main": "index.js",
   "scripts": {
-    "client": "scripts/client.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node scripts/client.js",
+    "test": "node scripts/client.js test"
   },
   "repository": {
     "type": "git",
@@ -31,11 +31,10 @@
     "less": "^2.5.3",
     "mocha": "^2.3.4",
     "node-static": "^0.7.7",
-    "orchestrator": "^0.3.7",
     "protractor": "^3.0.0",
-    "uglifyjs": "^2.4.10",
+    "scripts-plus": "^1.1.0",
+    "uglifyify": "^3.0.1",
     "watch": "^0.16.0",
-    "watchify": "^3.6.1",
-    "yargs": "^3.31.0"
+    "watchify": "^3.6.1"
   }
 }

@@ -1,40 +1,31 @@
-#!/usr/bin/env node
-var path = require('path');
-var exec = require('child_process').exec;
-var Orchestrator = require('orchestrator');
-var argv = require('yargs').argv;
-var task = argv._[0] || 'default';
-var args = argv._.slice(1);
-var opts = {env: Object.assign(process.env, {PATH: process.env.PATH})};
-var tasks = new Orchestrator();
+'use strict';
+
+var scripts = require('scripts-plus');
+var argv = scripts.argv();
 
 // Define our tasks
 
-tasks.add('default', ['build']);
-tasks.add('build', ['assets', 'build-js', 'build-css']);
-tasks.add('watch', ['watch-js', 'watch-css']);
-tasks.add('test', ['lint', 'karma']);
+scripts.add('default', ['build']);
+scripts.add('build', ['assets', 'build-js', 'build-css']);
+scripts.add('watch', ['watch-js', 'watch-css']);
+scripts.add('test', ['lint', 'karma']);
 
-tasks.add('build-js', ['lint'], function(done) {
-  var cmd = 'browserify client/app.js | uglifyjs -c > public/bundle.js';
-  exec(cmd, opts, logger(done));
+scripts.add('build-js', ['lint'], function(done) {
+  var args = 'client/app.js -t uglifyify -o public/bundle.js'.split(' ');
+  scripts.spawn('browserify', args, logger(done));
 });
 
-tasks.add('build-css', function(done) {
-  var cmd = 'lessc -x client/styles/app.less public/bundle.css';
-  exec(cmd, opts, logger(done));
+scripts.add('build-css', function(done) {
+  var args = '-x client/styles/app.less public/bundle.css'.split(' ');
+  scripts.spawn('lessc', args, logger(done));
 });
 
-tasks.add('watch-js', function(done) {
-  spawner('watchify', [
-    'client/app.js', 
-    '-o', 
-    'public/bundle.js',
-    '-v'
-  ], done);
+scripts.add('watch-js', function(done) {
+  var args = 'client/app.js -o public/bundle.js -v'.split(' ');
+  scripts.spawn('watchify', args, logger(done));
 });
 
-tasks.add('watch-css', function(done) {
+scripts.add('watch-css', function(done) {
   var watch = require('watch');
   var cmd = 'lessc -x client/styles/app.less public/bundle.css';
   watch.createMonitor('client/styles', function (monitor) {
@@ -50,37 +41,34 @@ tasks.add('watch-css', function(done) {
   })
 });
 
-tasks.add('karma', ['lint'], function(done) {
-  spawner('karma', ['start', 'karma.conf.js'], done);
+scripts.add('karma', ['lint'], function(done) {
+  scripts.spawn('karma', ['start', 'karma.conf.js'], logger(done));
 });
 
-tasks.add('lint', function(done) {
-  var cmd = 'jshint client/**.js';
-  exec(cmd, opts, logger(done));
+scripts.add('lint', function(done) {
+  scripts.spawn('jshint', ['./client/app.js'], logger(done));
 });
 
-tasks.add('clean', ['rm'], function(done) {
-  exec('mkdir ./public', opts, logger(done));
+scripts.add('clean', ['rm'], function(done) {
+  scripts.spawn('mkdir', ['./public'], logger(done));
 });
 
-tasks.add('assets', ['clean'], function(done) {
-  var cmd = 'cp client/index.html public/index.html';
-  // @TODO: Copy an 'assets/' folder for images, fonts, etc.
-  exec(cmd, opts, logger(done));
+scripts.add('assets', ['clean'], function(done) {
+  scripts.spawn('cp', ['client/index.html', 'public/index.html'], logger(done));
 });
 
-tasks.add('rm', function(done) {
-  exec('rm -rf ./public', opts, logger(done));
+scripts.add('rm', function(done) {
+  scripts.spawn('rm', ['-rf', './public'], logger(done));
 });
 
-tasks.add('server', function(done) {
-  var static = require('node-static');
+scripts.add('server', function(done) {
+  var statics = require('node-static');
   var fs = require('fs');
   fs.open('./public', 'r', function(err) {
     if (err && err.code === 'ENOENT') {
       console.error('./public does not exist! Run "client build" first.');
     } else {
-      var file = new static.Server('./public');
+      var file = new statics.Server('./public');
       require('http').createServer(function(request, response) {
         request.addListener('end', function() {
           file.serve(request, response);
@@ -93,33 +81,14 @@ tasks.add('server', function(done) {
 });
 
 // Run the specified task
-tasks.start(task, function(err) {
-  if (err) {
-    console.error(task, err); 
-  } else {
-    console.log(task, 'completed!');
-  }
-});
-
-function spawner(bin, args, done) {
-  var spawn = require('child_process').spawn;
-  var cmd  = spawn(bin, args || []);
-  var buffLog = function(data) { console.log(''+data); };
-
-  cmd.stdout.on('data', buffLog);
-  cmd.stderr.on('data', buffLog);
-  cmd.on('exit', function(code) {
-    console.log('exit code: ' + code);
-    if (typeof done === 'function') done();
-  });
-}
+scripts.run(argv);
 
 function logger(done) {
   return function(err, stdout) {
     if (err) {
       console.error(err); 
     } else {
-      console.log(stdout || '.');
+      console.log(stdout || '');
     }
     if (done) { done(err); }
   };
