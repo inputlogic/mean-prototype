@@ -2,7 +2,7 @@
 
 Project base for MySQL, Express and Nunjucks built with Node (aka: MENN)
 
-## Structure
+## Structure Overview
 
 - `app.js`
 - `config/`
@@ -19,11 +19,13 @@ Project base for MySQL, Express and Nunjucks built with Node (aka: MENN)
     - `routes.js` 
 - `public/`
 
-### `app.js` 
+## Structure Detail
+
+#### `app.js` 
 
 The entry point for the Express app. All setup logic should exist in here.
 
-### `config/` 
+#### `config/` 
 
 Loads common configs from index.js and any environment specific configs.
 
@@ -31,7 +33,7 @@ Loads common configs from index.js and any environment specific configs.
 var config = require('./config');
 ```
 
-### `middleware/`
+#### `middleware/`
 
 Contains all middleware captured by Express. Each file should be a dedicated
 function and the filename should be the same as the function name.
@@ -39,7 +41,7 @@ function and the filename should be the same as the function name.
 Middleware will be used for stuff like authenticating routes, custom 404 pages,
 logging etc.
 
-### `modules`
+#### `modules`
 
 Each piece of app functionality should be encapsulated in a module directory. 
 The module directory name should reflect what it is, `users/` for example. A 
