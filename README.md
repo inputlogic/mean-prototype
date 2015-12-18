@@ -49,10 +49,10 @@ logging etc.
 #### `modules/`
 
 Each piece of app functionality should be encapsulated in a module directory. 
-The module directory name should reflect what it is; `users/` for example. A 
-module is made up of *one or more* of the following files:
+The module directory name should reflect what it is; `users/` for example. Module 
+names should be plural. Users vs User, People vs Person.
 
-Module names should plural. Users vs User, People vs Person.
+A module is made up of *one or more* of the following files:
 
 #### `<module>/api.js`
 
