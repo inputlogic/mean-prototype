@@ -80,7 +80,7 @@ users.findAll(function(err, allUsers) {
 });
 ```
 
-The `findAll` function would be defined the the `model.js` file.
+The `findAll` function would be defined in the `model.js` file.
 
 If a module needs multiple models, then there should be a `models/` directory
 that contains files named after the model. Model table names should pre-prend the 
@@ -103,6 +103,7 @@ Route names should try to prepend the module name where it makes sense. Obviousl
 this isn't always the case, such as a "home" page URL.
 
 Controller route example: `/accounts/dashboard`
+
 API route example: `POST /api/accounts/:id`
 
 #### `public/`
