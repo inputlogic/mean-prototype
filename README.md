@@ -15,11 +15,11 @@ Project base for MySQL, Express and Nunjucks built with Node (aka: MENN)
   - `users`
     - `api.js`
     - `controller.js`
+    - `middleware.js`
     - `model.js`
     - `routes.js` 
 - `public/`
   - `css/`
-  - `html/`
   - `js/`
 - `views/`
   - `users/`
@@ -44,11 +44,15 @@ var config = require('./config');
 
 #### `middleware/`
 
-Contains all middleware captured by Express. Each file should be a dedicated
-function and the filename should be the same as the function name.
+Contains all app-wide middleware captured by Express. Each file should be a 
+dedicated function and the filename should be the same as the function name, 
+camel cased.
 
 Middleware will be used for stuff like authenticating routes, custom 404 pages,
 logging etc.
+
+If middleware logic is very specific to a module, put it in a modules 
+`middleware.js` file instead.
 
 #### `modules/`
 
@@ -69,6 +73,10 @@ JSON, and is not designed for loading views. All API routes should begin with
 Used for Express routes related to loading views. This would be the typical
 type of routes used in an application. A user visits the url, some calls are 
 made to a model and the view for that route is loaded.
+
+#### `<module>/middleware.js`
+
+Used for module specific Express middleware. May contain multiple functions.
 
 #### `<module>/model.js`
 
