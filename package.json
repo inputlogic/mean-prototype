@@ -4,13 +4,13 @@
   "description": "Project base for Node, Express, MySQL projects",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "test": "mocha --reporter spec"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/inputlogic/prototype.git"
   },
-  "keywords": [],
   "author": "Input Logic, Inc.",
   "license": "ISC",
   "bugs": {
