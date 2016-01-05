@@ -13,7 +13,7 @@ async.waterfall([
 function loadMiddleware(done) {
   async.each(config.middleware, function(m, next) {
     console.log('Loading middleware:', m);
-    app.use(require('./middleware/' + m));
+    app.use(require('./libs/middleware/' + m));
     next();
   }, done);
 }

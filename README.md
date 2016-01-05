@@ -2,6 +2,7 @@
 
 Project base for MySQL, Express and Angular built on Node (aka: MEAN)
 
+
 ## Structure Overview
 
 - `app.js`
@@ -9,8 +10,10 @@ Project base for MySQL, Express and Angular built on Node (aka: MEAN)
   - `index.js`
   - `development.js`
   - `production.js`
-- `middleware/`
-  - `isLoggedIn.js`
+- `libs/`
+  - `helpers/`
+  - `middleware/`
+    - `isLoggedIn.js`
 - `modules/`
   - `users`
     - `api.js`
@@ -26,15 +29,16 @@ Project base for MySQL, Express and Angular built on Node (aka: MEAN)
     - `login.html`
     - `myProfile.html`
 
-## Structure Detail
 
-#### `app.js` 
+## app.js
 
 The entry point for the Express app. All setup logic should exist in here.
 
-#### `config/` 
 
-Loads common configs from index.js and any environment specific configs.
+## config/
+
+Loads common configs from `./config/index.js` and merges any environment 
+specific configs.
 
 Example: 
 
@@ -42,45 +46,70 @@ Example:
 var config = require('./config');
 ```
 
-#### `middleware/`
+## libs/helpers/
 
-Contains all app-wide middleware captured by Express. Each file should be a 
-dedicated function and the filename should be the same as the function name, 
-camel cased.
+Contains app-wide helper functions for use throught the app. These are typically
+simple "utility" functions that are re-used in different areas.
 
-Middleware will be used for stuff like authenticating routes, custom 404 pages,
-logging etc.
+Each helper should be a single file that exports a single function. The filename
+should match the function.
+
+
+## libs/middleware/
+
+Contains app-wide middleware to be used by Express. Each middleware should be a 
+single file that exports a single function. The filename should match the
+function name.
+
+App-wide middleware can be autoloaded for every request by adding its name to 
+the `middleware` config array.
+
+Example:
+
+```javascript
+middleware: ['logHttpRequest', 'isLoggedIn']
+```
+
+The above would load the `logHttpRequest` and `isLoggedIn` middleware for every 
+request in the order specified.
 
 If middleware logic is very specific to a module, put it in a modules 
 `middleware.js` file instead.
 
-#### `modules/`
+
+## modules/
 
 Each piece of app functionality should be encapsulated in a module directory. 
-The module directory name should reflect what it is; `users/` for example. Module 
-names should be plural. Users vs User, People vs Person.
+The module directory name should reflect what it is; `users/` for example. 
+Module names should be plural. Users vs User, People vs Person.
 
 A module is made up of *one or more* of the following files:
 
-#### `<module>/api.js`
+
+## modules/<module>/api.js
 
 Used for Express API based routes only. An API route should only ever return
-JSON, and is not designed for loading views. All API routes should begin with 
-`/api/`
+JSON, and is not designed for loading views. All API routes begin with 
+`/api/` automatically.
 
-#### `<module>/controller.js`
+
+## modules/<module>/controller.js
 
 Used for Express routes related to loading views. This would be the typical
 type of routes used in an application. A user visits the url, some calls are 
-made to a model and the view for that route is loaded.
+made to a model and the view for that route is loaded. The standard "C" in MVC
+type stuff ;)
 
-#### `<module>/middleware.js`
 
-Used for module specific Express middleware. May contain multiple functions.
+## modules/<module>/middleware.js
 
-#### `<module>/model.js`
+Used for module specific Express middleware. May contain multiple functions as
+opposed to single function per file on app-wide middleware.
 
-Contains model logic for this specific module. Simply a file of functions that
+
+## modules/<module>/model.js
+
+Contains model logic for the specific module. Simply a file of functions that
 can be called to perform queries on the model.
 
 Example:
@@ -95,42 +124,31 @@ users.findAll(function(err, allUsers) {
 The `findAll` function would be defined in the `model.js` file.
 
 If a module needs multiple models, then there should be a `models/` directory
-that contains files named after the model. Model table names should pre-prend the 
-module name
+that contains files named after the model. Model db table names should pre-prend 
+the module name
 
 Example:
 
 - `modules`
   - `accounts/`
     - models/`
-      - `users.js` table would be `account_users`
-      - `history.js` table would be `account_history`
+      - `users.js` table would be `accounts_users`
+      - `history.js` table would be `accounts_history`
 
-#### `<module>/routes.js`
-
-Contains the route mappings for a modules controllers and apis. The reason they
-are defined here is for a single source of truth on how a URL is being handled.
-
-Route names should try to prepend the module name where it makes sense. Obviously
-this isn't always the case, such as a "home" page URL.
-
-Controller route example: `/accounts/dashboard`
-
-API route example: `POST /api/accounts/:id`
-
-#### `public/`
+## public/
 
 Contains public (static) content such as CSS, Javascript etc. The directory
 structure should be self-explanitory ;)
 
-#### `views/`
+## views/
 
 A modules HTML views should exist here and not in the modules/ directory. HTML
 views should be put inside a directory named after the module. File names
-should be camel cased.
+should match the route/function name.
 
 Example:
 
-`views/accounts/dashboard.html`
-
-`views/accounts/myAccount.html`
+```
+views/accounts/dashboard.html
+views/accounts/myAccount.html
+```

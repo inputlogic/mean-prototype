@@ -3,7 +3,15 @@
  */
 var common = {
   env: process.env.APP_ENV || 'development',
+
+  /**
+   * Middleware defined in /libs/middleware to be loaded on every request.
+   */
   middleware: ['isLoggedIn'],
+
+  /**
+   * Modules defined in /modules to be loaded on every request.
+   */
   modules: [
     {name: 'users', route: '/users'}
   ]

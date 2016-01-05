@@ -1,7 +1,7 @@
 {
   "name": "prototype",
   "version": "1.0.0",
-  "description": "Project base for Node, Express, MySQL projects",
+  "description": "Project base for MySQL, Express and Angular built on Node (aka: MEAN)",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
