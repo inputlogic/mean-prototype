@@ -86,14 +86,14 @@ Module names should be plural. Users vs User, People vs Person.
 A module is made up of *one or more* of the following files:
 
 
-## modules/<module>/api.js
+## modules/[module]/api.js
 
 Used for Express API based routes only. An API route should only ever return
 JSON, and is not designed for loading views. All API routes begin with 
 `/api/` automatically.
 
 
-## modules/<module>/controller.js
+## modules/[module]/controller.js
 
 Used for Express routes related to loading views. This would be the typical
 type of routes used in an application. A user visits the url, some calls are 
@@ -101,13 +101,13 @@ made to a model and the view for that route is loaded. The standard "C" in MVC
 type stuff ;)
 
 
-## modules/<module>/middleware.js
+## modules/[module]/middleware.js
 
 Used for module specific Express middleware. May contain multiple functions as
 opposed to single function per file on app-wide middleware.
 
 
-## modules/<module>/model.js
+## modules/[module]/model.js
 
 Contains model logic for the specific module. Simply a file of functions that
 can be called to perform queries on the model.
@@ -131,7 +131,7 @@ Example:
 
 - `modules`
   - `accounts/`
-    - models/`
+    - `models/`
       - `users.js` table would be `accounts_users`
       - `history.js` table would be `accounts_history`
 
