@@ -17,6 +17,8 @@ var common = {
   ]
 };
 
+
+// -----------------------------------------------------------------------------
 // Handles combining common and env configs
 var e = require('./' + common.env);
 for(var k in e) {

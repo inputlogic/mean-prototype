@@ -90,7 +90,8 @@ A module is made up of *one or more* of the following files:
 
 Used for Express API based routes only. An API route should only ever return
 JSON, and is not designed for loading views. All API routes begin with 
-`/api/` automatically.
+`/api/[module-name]` automatically. So the `users/` module for example, would be
+prepended with `/api/users` for all routes defined in `users/api.js`.
 
 
 ## modules/[module]/controller.js
