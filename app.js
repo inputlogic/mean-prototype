@@ -1,9 +1,13 @@
 var fs = require('fs');
 var async = require('async');
 var express = require('express');
-var knex = require('knex');
 var config = require('./config');
 var app = express();
+
+var knex = require('knex')({
+  client: 'mysql2',
+  connection: config.connection
+});
 
 async.waterfall([
   loadMiddleware,
@@ -35,7 +39,7 @@ function loadModels(module, next) {
   var modelDirectory = './modules/' + module.name + '/models';
   fileExists(modelFile, function(exists) {
     if (exists) { // If there's a single model.js file
-      return loadModelFile(modelFile, next);
+      return loadModelFile(module.name, modelFile, next);
     }
     else { // If there are multiple model files in a folder
       fileExists(modelDirectory, function(exists) {
@@ -48,8 +52,14 @@ function loadModels(module, next) {
   });
 }
 
-function loadModelFile(modelFile, next) {
-  knex.schema.createTableIfNotExists(module.name, require(modelFile))
+function loadModelFile(name, modelFile, next) {
+  var schema = require(modelFile);
+
+  if (typeof schema !== 'function') {
+    return next(new Error('Model not defined'));
+  }
+
+  knex.schema.createTableIfNotExists(name, require(modelFile))
     .then(function(result) {
       return next();
     })
@@ -61,8 +71,11 @@ function loadModelFile(modelFile, next) {
 
 function loadModelDirectory(modelDirectory, next) {
   var files = fs.readdir(modelDirectory, function() {
-    async.each(files, function(file, callback) {
-      return loadModelFile(file, callback);
+    async.each(files, function(filename, callback) {
+
+      var modelName = filename.split('.')[0];
+
+      return loadModelFile(modelName, modelDirectory + '/' + filename, callback);
     }, next);
   });
 }
