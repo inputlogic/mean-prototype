@@ -2,7 +2,7 @@
  * Add global (available in both environments) here.
  */
 var common = {
-  env: process.env.APP_ENV || 'development',
+  env: process.env.NODE_ENV || 'development',
 
   /**
    * Middleware defined in /libs/middleware to be loaded on every request.
