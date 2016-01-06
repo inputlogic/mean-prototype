@@ -2,7 +2,16 @@ var fs = require('fs');
 var async = require('async');
 var express = require('express');
 var config = require('./config');
+var nunjucks = require('nunjucks');
 var app = express();
+
+/*
+	TODO: Ask Gavin about putting configure here
+*/
+nunjucks.configure('views', {
+    autoescape: true,
+    express: app
+});
 
 async.waterfall([
   loadMiddleware,
@@ -52,7 +61,7 @@ function loadModuleController(module, next) {
 
 function fileExists(file, done) {
   fs.stat(file, function(err, stat) {
-    if(err && err.code == 'ENOENT') return done(false); 
+    if(err && err.code == 'ENOENT') return done(false);
     return done(true);
   });
 }
