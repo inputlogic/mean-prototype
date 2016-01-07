@@ -90,8 +90,10 @@ A module is made up of *one or more* of the following files:
 
 Used for Express API based routes only. An API route should only ever return
 JSON, and is not designed for loading views. All API routes begin with 
-`/api/[module-name]` automatically. So the `users/` module for example, would be
+`/api/[route-name]` automatically. So the `users/` module for example, would be
 prepended with `/api/users` for all routes defined in `users/api.js`.
+
+The router name for each loaded module is defined in the configs.
 
 
 ## modules/[module]/controller.js
@@ -100,6 +102,9 @@ Used for Express routes related to loading views. This would be the typical
 type of routes used in an application. A user visits the url, some calls are 
 made to a model and the view for that route is loaded. The standard "C" in MVC
 type stuff ;)
+
+Each module loaded must define its initial route in the configs. This ensures
+no route/name collisions between modules.
 
 
 ## modules/[module]/middleware.js
