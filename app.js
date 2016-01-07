@@ -2,12 +2,12 @@ var fs = require('fs');
 var async = require('async');
 var express = require('express');
 var config = require('./config');
-var app = express();
 var nunjucks = require('nunjucks')
 var knex = require('knex')({
   client: 'mysql2',
   connection: config.connection
 });
+var app = express();
 
 nunjucks.configure('views', {
   autoescape: true,
