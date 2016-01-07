@@ -6,18 +6,23 @@ var nunjucks = require('nunjucks');
 var app = express();
 
 /*
-	TODO: Ask Gavin about putting configure here
+	TODO: Ask Gavin about here to put nunjucks.configure
 */
-nunjucks.configure('views', {
-    autoescape: true,
-    express: app
-});
 
 async.waterfall([
+	configurePackages,
   loadMiddleware,
   loadModules,
   startServer
 ]);
+
+function configurePackages(done){
+	nunjucks.configure('views', {
+	    autoescape: true,
+	    express: app
+	});
+	done();
+}
 
 function loadMiddleware(done) {
   async.each(config.middleware, function(m, next) {
