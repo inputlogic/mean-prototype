@@ -20,7 +20,7 @@ Project base for MySQL, Express and Angular built on Node (aka: MEAN)
     - `controller.js`
     - `middleware.js`
     - `model.js`
-    - `routes.js` 
+    - `routes.js`
 - `public/`
   - `css/`
   - `js/`
@@ -37,10 +37,10 @@ The entry point for the Express app. All setup logic should exist in here.
 
 ## config/
 
-Loads common configs from `./config/index.js` and merges any environment 
+Loads common configs from `./config/index.js` and merges any environment
 specific configs.
 
-Example: 
+Example:
 
 ```javascript
 var config = require('./config');
@@ -57,11 +57,11 @@ should match the function.
 
 ## libs/middleware/
 
-Contains app-wide middleware to be used by Express. Each middleware should be a 
+Contains app-wide middleware to be used by Express. Each middleware should be a
 single file that exports a single function. The filename should match the
 function name.
 
-App-wide middleware can be autoloaded for every request by adding its name to 
+App-wide middleware can be autoloaded for every request by adding its name to
 the `middleware` config array.
 
 Example:
@@ -70,17 +70,17 @@ Example:
 middleware: ['logHttpRequest', 'isLoggedIn']
 ```
 
-The above would load the `logHttpRequest` and `isLoggedIn` middleware for every 
+The above would load the `logHttpRequest` and `isLoggedIn` middleware for every
 request in the order specified.
 
-If middleware logic is very specific to a module, put it in a modules 
+If middleware logic is very specific to a module, put it in a modules
 `middleware.js` file instead.
 
 
 ## modules/
 
-Each piece of app functionality should be encapsulated in a module directory. 
-The module directory name should reflect what it is; `users/` for example. 
+Each piece of app functionality should be encapsulated in a module directory.
+The module directory name should reflect what it is; `users/` for example.
 Module names should be plural. Users vs User, People vs Person.
 
 A module is made up of *one or more* of the following files:
@@ -89,7 +89,7 @@ A module is made up of *one or more* of the following files:
 ## modules/[module]/api.js
 
 Used for Express API based routes only. An API route should only ever return
-JSON, and is not designed for loading views. All API routes begin with 
+JSON, and is not designed for loading views. All API routes begin with
 `/api/[route-name]` automatically. So the `users/` module for example, would be
 prepended with `/api/users` for all routes defined in `users/api.js`.
 
@@ -99,7 +99,7 @@ The router name for each loaded module is defined in the configs.
 ## modules/[module]/controller.js
 
 Used for Express routes related to loading views. This would be the typical
-type of routes used in an application. A user visits the url, some calls are 
+type of routes used in an application. A user visits the url, some calls are
 made to a model and the view for that route is loaded. The standard "C" in MVC
 type stuff ;)
 
@@ -123,14 +123,14 @@ Example:
 ```javascript
 var users = require('./modules/users/model');
 users.findAll(function(err, allUsers) {
-  // ... 
+  // ...
 });
 ```
 
 The `findAll` function would be defined in the `model.js` file.
 
 If a module needs multiple models, then there should be a `models/` directory
-that contains files named after the model. Model db table names should pre-prend 
+that contains files named after the model. Model db table names should pre-prend
 the module name
 
 Example:
@@ -158,3 +158,8 @@ Example:
 views/accounts/dashboard.html
 views/accounts/myAccount.html
 ```
+
+## Conventions
+
+- require npm packages followed by local packages at the top of files
+- module.exports should be at the top of the file (but below requires)
