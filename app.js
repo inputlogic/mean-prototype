@@ -31,7 +31,7 @@ function loadMiddleware(done) {
 function loadModules(done) {
   async.each(config.modules, function(module, next) {
     console.log('Loading module:', module.name);
-    loadModels(module, function(err) {
+    loadModuleModels(module, function(err) {
       loadModuleApi(module, function() {
         loadModuleController(module, next);
       });
@@ -39,7 +39,7 @@ function loadModules(done) {
   }, done);
 }
 
-function loadModels(module, next) {
+function loadModuleModels(module, next) {
   var modelFile = './modules/' + module.name + '/model.js';
   var modelDirectory = './modules/' + module.name + '/models';
   fileExists(modelFile, function(exists) {
