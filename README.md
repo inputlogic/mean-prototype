@@ -161,5 +161,8 @@ views/accounts/myAccount.html
 
 ## Conventions
 
-- require npm packages followed by local packages at the top of files
-- module.exports should be at the top of the file (but below requires)
+### node file organization
+
+- require npm packages first
+- require local files second
+- use module.exports at the top of the file (but below any requires)
