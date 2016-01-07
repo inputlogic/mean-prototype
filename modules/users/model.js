@@ -1,9 +1,10 @@
 module.exports = {
 
   /**
-   * Creates the table. Called automatically on app startup.
+   * Defines a SQL table schema and used to automatically create table at 
+   * startup.
    */
-  init: function init(table) {
+  schema: function schema(table) {
     table.increments();
     table.string('name').notNullable();
     table.string('email').notNullable();

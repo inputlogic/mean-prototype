@@ -1,8 +1,8 @@
 module.exports = {
   connection: {
     host: "127.0.0.1",
-    user: "express",
-    password: "express",
+    user: "root",
+    password: "password",
     database: "prototype"
   }
 };

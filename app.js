@@ -58,13 +58,13 @@ function loadModuleModels(module, next) {
 }
 
 function loadModelFile(name, modelFile, next) {
-  var schema = require(modelFile);
+  var model = require(modelFile);
 
-  if (typeof schema !== 'function') {
-    return next(new Error('Model not defined'));
+  if(typeof model.schema !== 'function') {
+    return next(new Error('Schema not defined for model: ' + name));
   }
 
-  knex.schema.createTableIfNotExists(name, require(modelFile))
+  knex.schema.createTableIfNotExists(name, model.schema)
     .then(function(result) {
       return next();
     })
