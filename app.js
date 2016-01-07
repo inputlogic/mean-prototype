@@ -3,13 +3,15 @@ var async = require('async');
 var express = require('express');
 var config = require('./config');
 var app = express();
-var nunjucks = require('nunjucks').configure('views', {
-  autoescape: true,
-  express: app
-})
+var nunjucks = require('nunjucks')
 var knex = require('knex')({
   client: 'mysql2',
   connection: config.connection
+});
+
+nunjucks.configure('views', {
+  autoescape: true,
+  express: app
 });
 
 async.waterfall([
