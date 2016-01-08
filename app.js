@@ -1,13 +1,12 @@
 var fs = require('fs');
 var async = require('async');
 var express = require('express');
-var config = require('./config');
 var nunjucks = require('nunjucks')
-var knex = require('knex')({
-  client: 'mysql2',
-  connection: config.connection
-});
+var knex = require('knex');
+var config = require('./config');
+
 var app = express();
+var db = knex(config.db);
 
 nunjucks.configure('views', {
   autoescape: true,
@@ -43,12 +42,12 @@ function loadModuleModels(module, next) {
   var modelFile = './modules/' + module.name + '/model.js';
   var modelDirectory = './modules/' + module.name + '/models';
   fileExists(modelFile, function(exists) {
-    if (exists) { // If there's a single model.js file
+    if(exists) { // If there's a single model.js file
       return loadModelFile(module.name, modelFile, next);
     }
     else { // If there are multiple model files in a folder
       fileExists(modelDirectory, function(exists) {
-        if (exists) {
+        if(exists) {
           return loadModelDirectory(modelDirectory, next);
         }
         return next();
@@ -59,12 +58,14 @@ function loadModuleModels(module, next) {
 
 function loadModelFile(name, modelFile, next) {
   var model = require(modelFile);
+  model.db = db; // Attach Knex instance for all models
+  model.table = db(model.tableName); // Attach Knex instance for models table
 
   if(typeof model.schema !== 'function') {
     return next(new Error('Schema not defined for model: ' + name));
   }
 
-  knex.schema.createTableIfNotExists(name, model.schema)
+  db.schema.createTableIfNotExists(model.table, model.schema)
     .then(function(result) {
       return next();
     })
