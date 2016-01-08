@@ -17,15 +17,10 @@ module.exports = {
     return done(new Error('not implemented')); 
   },
 
-  create: function create(done) {
-    var table = this.table;
-    var data = {
-      name: 'Gavin',
-      email: 'gavin@geekforbrains.com',
-      password: 'buttchicken',
-      created_at: new Date(),
-      updated_at: new Date()
-    };
-    table.insert(data).then(done(null, 'yay'));
+  create: function create(data) {
+    var datestamp = new Date();
+    data.created_at = datestamp;
+    data.updated_at = datestamp;
+    return this.table.insert(data);
   }
 };

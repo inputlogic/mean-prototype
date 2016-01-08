@@ -1,12 +1,15 @@
 var fs = require('fs');
 var async = require('async');
+var bodyParser = require('body-parser');
 var express = require('express');
 var nunjucks = require('nunjucks')
 var knex = require('knex');
 var config = require('./config');
 
-var app = express();
 var db = knex(config.db);
+var app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true})); 
 
 nunjucks.configure('views', {
   autoescape: true,
