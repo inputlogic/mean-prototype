@@ -6,6 +6,9 @@ module.exports = {
     database: "prototype"
   },
 	logging:{
-		morgan: 'dev'
+		morgan: 'dev',
+		winston: {
+			level: 'debug'
+		}
 	}
 };

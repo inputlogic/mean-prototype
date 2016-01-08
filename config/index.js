@@ -15,6 +15,7 @@ var common = {
   modules: [
     {name: 'users', route: '/users'}
   ]
+
 };
 
 
