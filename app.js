@@ -65,7 +65,7 @@ function loadModelFile(name, modelFile, next) {
     return next(new Error('Schema not defined for model: ' + name));
   }
 
-  db.schema.createTableIfNotExists(model.table, model.schema)
+  db.schema.createTableIfNotExists(model.tableName, model.schema)
     .then(function(result) {
       return next();
     })
