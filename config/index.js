@@ -7,7 +7,7 @@ var common = {
   /**
    * Middleware defined in /libs/middleware to be loaded on every request.
    */
-  middleware: ['isLoggedIn'],
+  middleware: ['isLoggedIn', 'morgan'],
 
   /**
    * Modules defined in /modules to be loaded on every request.
