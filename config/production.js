@@ -6,7 +6,8 @@ module.exports = {
       user: null,
       password: null,
       database: null
-    }
+    },
+    debug: true
   },
 	logging: {
 		morgan: 'combined',

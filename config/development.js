@@ -6,7 +6,8 @@ module.exports = {
       user: "root",
       password: "password",
       database: "prototype"
-    }
+    },
+    debug: true
   },
 	logging:{
 		morgan: 'dev',
