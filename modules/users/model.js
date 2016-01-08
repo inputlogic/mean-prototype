@@ -1,9 +1,6 @@
 module.exports = {
+  tableName: 'users',
 
-  /**
-   * Defines a SQL table schema and used to automatically create table at 
-   * startup.
-   */
   schema: function schema(table) {
     table.increments();
     table.string('name').notNullable();
@@ -18,5 +15,12 @@ module.exports = {
 
   findAll: function findAll(done) {
     return done(new Error('not implemented')); 
+  },
+
+  create: function create(data) {
+    var datestamp = new Date();
+    data.created_at = datestamp;
+    data.updated_at = datestamp;
+    return this.table.insert(data);
   }
 };
