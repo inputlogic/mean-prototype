@@ -5,5 +5,7 @@ module.exports = {
     password: "password",
     database: "prototype"
   },
-	morgan: 'dev'
+	logging:{
+		morgan: 'dev'
+	}
 };

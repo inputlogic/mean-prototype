@@ -1,3 +1,5 @@
 module.exports = {
-	morgan: 'combined'
+	logging: {
+		morgan: 'combined'
+	}
 };
