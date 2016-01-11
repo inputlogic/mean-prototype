@@ -7,7 +7,7 @@ module.exports = {
       password: "password",
       database: "prototype"
     },
-    debug: true
+    debug: false
   },
 	logging:{
 		morgan: 'dev',
