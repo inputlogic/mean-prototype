@@ -16,6 +16,8 @@ app.models = {};
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+app.log.info(app.config);
+
 nunjucks.configure('views', {
   autoescape: true,
   express: app
@@ -124,6 +126,7 @@ function fileExists(file, done) {
     return done(true);
   });
 }
+
 
 function startServer() {
   var server = app.listen(app.config.port || 3000, function () {

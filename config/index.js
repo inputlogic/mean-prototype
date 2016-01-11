@@ -1,3 +1,5 @@
+var fs = require('fs');
+
 /**
  * Add global (available in both environments) here.
  */
@@ -24,4 +26,14 @@ var e = require('./' + common.env);
 for(var k in e) {
   common[k] = e[k];
 }
+
+if(common.env == 'development'){
+	try{
+		fs.statSync('./config/local.js');
+		var local = require('./local.js');
+		for(var k in local)
+			common[k] = local[k];
+	}catch(err){}
+}
+
 module.exports = common;
