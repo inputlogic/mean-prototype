@@ -16,8 +16,6 @@ app.models = {};
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.log.info(app.config);
-
 nunjucks.configure('views', {
   autoescape: true,
   express: app
