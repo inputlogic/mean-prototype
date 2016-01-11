@@ -5,11 +5,12 @@ var express = require('express');
 var nunjucks = require('nunjucks')
 var knex = require('knex');
 var config = require('./config');
+var winston = require('./libs/helpers/winston');
 var db = knex(config.db);
 
 app = express();
 app.config = config;
-app.log = require('./libs/helpers/winston');
+app.log = winston(config);
 app.models = {};
 
 app.use(bodyParser.json());

@@ -5,10 +5,10 @@ var winston = require('winston');
  *
  * Ex: app.log.info('foo');
  */
-module.exports = (function logger() {
+module.exports = function logger(config) {
 	if(logger.instance == undefined) {
 		logger.instance = new winston.Logger({
-			level: app.config.logging.winston.level || 'info',
+			level: config.logging.winston.level || 'info',
 			transports: [
 				new winston.transports.Console({
 					colorize: true
@@ -17,4 +17,4 @@ module.exports = (function logger() {
 		})
 	}
 	return logger.instance;
-})();
+}
