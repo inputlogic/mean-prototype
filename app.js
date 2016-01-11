@@ -5,11 +5,15 @@ var express = require('express');
 var nunjucks = require('nunjucks')
 var knex = require('knex');
 var config = require('./config');
-
 var db = knex(config.db);
-var app = express();
+
+app = express();
+app.config = config;
+app.log = require('./libs/helpers/winston');
+app.models = {};
+
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true})); 
+app.use(bodyParser.urlencoded({extended: true}));
 
 nunjucks.configure('views', {
   autoescape: true,
@@ -23,7 +27,7 @@ async.waterfall([
 ]);
 
 function loadMiddleware(done) {
-  async.each(config.middleware, function(m, next) {
+  async.each(app.config.middleware, function(m, next) {
     console.log('Loading middleware:', m);
     app.use(require('./libs/middleware/' + m));
     next();
@@ -31,7 +35,7 @@ function loadMiddleware(done) {
 }
 
 function loadModules(done) {
-  async.each(config.modules, function(module, next) {
+  async.each(app.config.modules, function(module, next) {
     console.log('Loading module:', module.name);
     loadModuleModels(module, function(err) {
       loadModuleApi(module, function() {
@@ -61,6 +65,7 @@ function loadModuleModels(module, next) {
 
 function loadModelFile(name, modelFile, next) {
   var model = require(modelFile);
+	app.models[name] = model;
   model.db = db; // Attach Knex instance for all models
   model.table = db(model.tableName); // Attach Knex instance for models table
 
@@ -120,9 +125,9 @@ function fileExists(file, done) {
 }
 
 function startServer() {
-  var server = app.listen(config.port || 3000, function () {
+  var server = app.listen(app.config.port || 3000, function () {
     var host = server.address().address;
     var port = server.address().port;
-    console.log('Listening at http://%s:%s in %s mode',  host, port, config.env);
+    console.log('Listening at http://%s:%s in %s mode',  host, port, app.config.env);
   });
 }
