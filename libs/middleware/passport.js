@@ -37,7 +37,7 @@ passport.serializeUser(function(user, done) {
 
 // Get user info from request session
 passport.deserializeUser(function(id, done) {
-  knex('users').where({id: id}).select('id', 'name', 'email', 'created_at', 'updated_at')
+  app.models.users.where({id: id}).select('id', 'name', 'email', 'created_at', 'updated_at')
     .then(function(users) {
       done(null, users[0]);
     })

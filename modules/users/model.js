@@ -17,13 +17,14 @@ module.exports = {
 
   // where - an object of query parameters
   // fields (optional) - an array of columns to select
-  findOne: function findOne(where, fields) {
+  findOne: function findOne(where, fields, done) {
 
     if (!fields) {
       fields = ['name', 'email', 'created_at', 'updated_at'];
     }
 
-    return this.table.where(where).select(fields);
+    this.table.where(where).select(fields)
+      .asCallback(done);
   },
 
   findAll: function findAll(done) {
@@ -46,12 +47,7 @@ module.exports = {
       data.password = hash;
 
       self.table.insert(data)
-        .then(function(result) {
-          done(null, result);
-        })
-        .catch(function(err) {
-          done(err, null);
-        });
+        .asCallback(done);
     });
   }
 };
