@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var request = require('request');
+var request = require('supertest');
 require('../app.js');
 
 describe('app.js', function(){
@@ -11,18 +11,12 @@ describe('app.js', function(){
 		done();
 	});
 
-	it('should respond to http request (is running)', function(done){
-		request({
-			method: "GET",
-			json: true,
-			url: "http://localhost:3000/"
-		}, function(err, res){
-			if(err) {
-				done(err);
-			}
-			else {
-				done();
-			}
-		});
+	it('should respond to http request (app is running)', function(done){
+		request(app)
+			.get('/')
+			.expect(function(res){
+				return res.statusCode !== 500;
+			})
+			.end(done);
 	});
 });
