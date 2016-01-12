@@ -72,7 +72,10 @@ function loadModelFile(name, modelFile, next) {
   var model = require(modelFile);
 	app.models[name] = model;
   model.db = db; // Attach Knex instance for all models
-  model.table = db(model.tableName); // Attach Knex instance for models table
+  // model.table = db(model.tableName); // Attach Knex instance for models table
+  model.table = function() {
+    return db(model.tableName);
+  };
 
   if(typeof model.schema !== 'function') {
     return next(new Error('Schema not defined for model: ' + name));

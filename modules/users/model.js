@@ -19,9 +19,7 @@ module.exports = {
   // fields (optional) - an array of columns to select
   findOne: function findOne(where, fields, done) {
 
-    console.log(fields, '=========');
-
-    this.table.where(where).select(fields)
+    this.table().where(where).select(fields)
       .limit(1)
       .asCallback(done);
   },
@@ -45,7 +43,7 @@ module.exports = {
       data.updated_at = datestamp;
       data.password = hash;
 
-      self.table.insert(data)
+      self.table().insert(data)
         .asCallback(done);
     });
   }
