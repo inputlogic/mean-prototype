@@ -3,7 +3,7 @@ module.exports = function (req, res, next){
 	res.abort = function abort(code, msg){
 
 		if(isApiRequest(req)){
-			var response = {'statusCode': code, 'message': msg}
+			var response = {'statusCode': code}
 			if(msg)
 				response.message = msg;
 			res.status(code).send(response);
