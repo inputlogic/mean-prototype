@@ -29,6 +29,7 @@ nunjucks.configure('views', {
 async.waterfall([
   loadMiddleware,
   loadModules,
+	load404Handler,
   startServer
 ]);
 
@@ -123,6 +124,14 @@ function loadModuleController(module, next) {
     }
     return next();
   });
+}
+
+function load404Handler(next){
+	app.use(function handle404(req,res,done){
+		res.abort(404, 'not found!');
+		done();
+	});
+	next();
 }
 
 
