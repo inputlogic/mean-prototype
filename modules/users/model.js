@@ -35,15 +35,16 @@ module.exports = {
   },
 
   findOneById: function findOneById(id, fields, done) {
-    return this._findOneBy({id: id}, fields, done);
+    this._findOneBy({id: id}, fields, done);
   },
 
   findOneByEmail: function findOneByEmail(email, fields, done) {
-    return this._findOneBy({email: email}, fields, done);
+    this._findOneBy({email: email}, fields, done);
   },
 
   findAll: function findAll(done) {
-    return done(new Error('not implemented')); 
+    this.table().select(['id', 'name', 'email', 'created_at', 'updated_at'])
+      .asCallback(done);
   },
 
   create: function create(data, done) {
