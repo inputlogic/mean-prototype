@@ -9,7 +9,7 @@ var common = {
   /**
    * Middleware defined in /libs/middleware to be loaded on every request.
    */
-  middleware: ['abort', 'isLoggedIn', 'morgan', 'passport'],
+  middleware: ['abort', 'morgan', 'passport'],
 
   /**
    * Modules defined in /modules to be loaded on every request.

@@ -1,5 +1,5 @@
 module.exports = {
-  middleware: ['isLoggedIn', 'passport'],
+  middleware: ['passport'],
   db: {
     client: 'mysql2',
     connection: {

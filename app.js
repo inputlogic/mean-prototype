@@ -6,9 +6,11 @@ var session = require('express-session');
 var express = require('express');
 var nunjucks = require('nunjucks')
 var knex = require('knex');
+var passport = require('passport');
 var config = require('./config');
 var winston = require('./libs/helpers/winston');
 var fileExists = require('./libs/helpers/fileExists');
+
 var db = knex(config.db);
 
 app = express();
@@ -19,14 +21,18 @@ app.models = {};
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
-app.use(session({secret: app.config.session.secret, resave: true, saveUninitialized: true}));
+app.use(session({
+  secret: app.config.session.secret, 
+  resave: true,
+  saveUninitialized: true
+}));
 
 nunjucks.configure('views', {
   autoescape: true,
   express: app
 });
 
-async.waterfall([
+async.series([
   loadMiddleware,
   loadModules,
 	load404Handler,
@@ -42,13 +48,22 @@ function loadMiddleware(done) {
 }
 
 function loadModules(done) {
-  async.each(app.config.modules, function(module, next) {
+  async.each(app.config.modules, function(module, nextLoop) {
     app.log.info('Loading module:', module.name);
-    loadModuleModels(module, function(err) {
-      loadModuleApi(module, function() {
-        loadModuleController(module, next);
-      });
-    });
+    // loadModuleModels(module, function(err) {
+    //   loadModuleApi(module, function() {
+    //     loadModuleController(module, function() {
+    //       loadModulePassport(module, next);
+    //     });
+    //   });
+    // });
+
+    async.series([
+      function(nextSeries) {loadModuleModels(module, nextSeries)},
+      function(nextSeries) {loadModuleApi(module, nextSeries)},
+      function(nextSeries) {loadModuleController(module, nextSeries)},
+      function(nextSeries) {loadModulePassport(module, nextSeries)}
+    ], nextLoop);
   }, done);
 }
 
@@ -57,6 +72,7 @@ function loadModuleModels(module, next) {
   var modelDirectory = './modules/' + module.name + '/models';
   fileExists(modelFile, function(exists) {
     if(exists) { // If there's a single model.js file
+      app.log.info('  => model');
       return loadModelFile(module.name, modelFile, next);
     }
     else { // If there are multiple model files in a folder
@@ -95,9 +111,8 @@ function loadModelFile(name, modelFile, next) {
 function loadModelDirectory(modelDirectory, next) {
   var files = fs.readdir(modelDirectory, function() {
     async.each(files, function(filename, callback) {
-
       var modelName = filename.split('.')[0];
-
+      app.log.info('  => model:', modelName);
       return loadModelFile(modelName, modelDirectory + '/' + filename, callback);
     }, next);
   });
@@ -121,6 +136,17 @@ function loadModuleController(module, next) {
     if(exists) {
       app.log.info('  => controller:', module.route);
       app.use(module.route, require(controllerFile))
+    }
+    return next();
+  });
+}
+
+function loadModulePassport(module, next) {
+  var passportFile = './modules/' + module.name + '/passport.js';
+  fileExists(passportFile, function(exists) {
+    if(exists) {
+      app.log.info('  => passport strategy');
+      require(passportFile);
     }
     return next();
   });

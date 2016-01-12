@@ -1,4 +1,3 @@
-
 module.exports = function (req, res, next){
 	res.abort = function abort(code, msg){
 
