@@ -31,7 +31,8 @@ for(var k in e) {
   common[k] = e[k];
 }
 
-if(common.env == 'development'){
+// If we're not running in production, override any configs from local.js
+if(common.env != 'production'){
 	try{
 		fs.statSync('./config/local.js');
 		var local = require('./local.js');

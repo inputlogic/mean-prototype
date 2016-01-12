@@ -34,7 +34,7 @@ async.waterfall([
 
 function loadMiddleware(done) {
   async.each(app.config.middleware, function(m, next) {
-    console.log('Loading middleware:', m);
+    app.log.info('Loading middleware:', m);
     app.use(require('./libs/middleware/' + m));
     next();
   }, done);
@@ -42,7 +42,7 @@ function loadMiddleware(done) {
 
 function loadModules(done) {
   async.each(app.config.modules, function(module, next) {
-    console.log('Loading module:', module.name);
+    app.log.info('Loading module:', module.name);
     loadModuleModels(module, function(err) {
       loadModuleApi(module, function() {
         loadModuleController(module, next);
@@ -73,7 +73,6 @@ function loadModelFile(name, modelFile, next) {
   var model = require(modelFile);
 	app.models[name] = model;
   model.db = db; // Attach Knex instance for all models
-  // model.table = db(model.tableName); // Attach Knex instance for models table
   model.table = function() {
     return db(model.tableName);
   };
@@ -87,7 +86,7 @@ function loadModelFile(name, modelFile, next) {
       return next();
     })
     .catch(function(err) {
-      console.log(err);
+      app.log.error(err);
       return next(err);
     });
 }
@@ -108,7 +107,7 @@ function loadModuleApi(module, next) {
   fileExists(apiFile, function(exists) {
     if(exists) {
       var apiRoute = '/api' + module.route;
-      console.log('  => api:', apiRoute);
+      app.log.info('  => api:', apiRoute);
       app.use(apiRoute, require(apiFile));
     }
     return next();
@@ -119,7 +118,7 @@ function loadModuleController(module, next) {
   var controllerFile = './modules/' + module.name + '/controller.js';
   fileExists(controllerFile, function(exists) {
     if(exists) {
-      console.log('  => controller:', module.route);
+      app.log.info('  => controller:', module.route);
       app.use(module.route, require(controllerFile))
     }
     return next();
@@ -128,9 +127,10 @@ function loadModuleController(module, next) {
 
 
 function startServer() {
+  if(process.env.NODE_ENV == 'test') return; // Don't start server if we're running test suite
   var server = app.listen(app.config.port || 3000, function () {
     var host = server.address().address;
     var port = server.address().port;
-    console.log('Listening at http://%s:%s in %s mode',  host, port, app.config.env);
+    app.log.info('Listening at http://%s:%s in %s mode',  host, port, app.config.env);
   });
 }
