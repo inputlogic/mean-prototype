@@ -1,4 +1,3 @@
 var morgan = require('morgan');
-var config = require('../../config');
 
-module.exports = morgan(config.logging.morgan);
+module.exports = morgan(app.config.logging.morgan);
