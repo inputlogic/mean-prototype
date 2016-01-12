@@ -50,14 +50,6 @@ function loadMiddleware(done) {
 function loadModules(done) {
   async.each(app.config.modules, function(module, nextLoop) {
     app.log.info('Loading module:', module.name);
-    // loadModuleModels(module, function(err) {
-    //   loadModuleApi(module, function() {
-    //     loadModuleController(module, function() {
-    //       loadModulePassport(module, next);
-    //     });
-    //   });
-    // });
-
     async.series([
       function(nextSeries) {loadModuleModels(module, nextSeries)},
       function(nextSeries) {loadModuleApi(module, nextSeries)},
