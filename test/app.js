@@ -1,15 +1,14 @@
 var expect = require('chai').expect;
 var request = require('request');
+var app = require('../app.js');
 
 describe('app.js', function(){
 
-	it('should have configs', function(done){
-		try{
-			require('../config'); //TODO find out how to test app.config
-			done();
-		} catch(err){
-			done(err);
-		}
+	it('should have global configs, models, and logger', function(done){
+		expect(app).to.have.property('config');
+		expect(app).to.have.property('models');
+		expect(app).to.have.property('log');
+		done();
 	});
 
 	it('should respond to http request (is running)', function(done){

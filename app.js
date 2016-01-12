@@ -16,6 +16,8 @@ app.models = {};
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+module.exports = app; // for chai test in test/app.js
+
 nunjucks.configure('views', {
   autoescape: true,
   express: app
