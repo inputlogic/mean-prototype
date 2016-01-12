@@ -10,8 +10,7 @@ passport.use(new LocalStrategy({
     passwordField: 'password'
   },
   function(username, password, done) {
-    app.models.users.findOne({email: username}, ['id', 'email', 'password'], function(err, users) {
-      var user = users[0];
+    app.models.users.findOneByEmail(username, ['id', 'email', 'password'], function(err, user) {
 
       if (err) {
         return done(err);
@@ -40,12 +39,12 @@ passport.serializeUser(function(user, done) {
 
 // Get user info from request session
 passport.deserializeUser(function(id, done) {
-  app.models.users.findOne({id: id}, '*', function(err, users) {
+  app.models.users.findOneById(id, function(err, user) {
     if (err) {
       return done(err);
     }
     else {
-      return done(null, users[0]);
+      return done(null, user);
     }
   });
 });

@@ -11,17 +11,35 @@ module.exports = {
     table.timestamps();
   },
 
-  findOneById: function findOneById(userId, done) {
-    return done(new Error('not implemented')); 
-  },
-
+  // Helper for findOneBy[...] queries 
+  //
   // where - an object of query parameters
   // fields (optional) - an array of columns to select
-  findOne: function findOne(where, fields, done) {
+  _findOneBy: function findOneBy(where, fields, done) {
 
-    this.table().where(where).select(fields)
-      .limit(1)
-      .asCallback(done);
+    var select;
+
+    if (typeof fields === 'function') {
+      select = ['id', 'name', 'email', 'created_at', 'updated_at'];
+
+      done = fields;
+    }
+
+    this.table().where(where).select(select)
+      .asCallback(function(err, rows) {
+        if (err) {
+          return done(err);
+        }
+        return done(null, rows[0]);
+      });
+  },
+
+  findOneById: function findOneById(id, fields, done) {
+    return this._findOneBy({id: id}, fields, done);
+  },
+
+  findOneByEmail: function findOneByEmail(email, fields, done) {
+    return this._findOneBy({email: email}, fields, done);
   },
 
   findAll: function findAll(done) {
