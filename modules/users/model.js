@@ -19,18 +19,9 @@ module.exports = {
   // fields (optional) - an array of columns to select
   findOne: function findOne(where, fields, done) {
 
-    var columns = fields;
+    console.log(fields, '=========');
 
-    if (!fields || typeof fields === 'function') {
-
-      if (!done) {
-        done = fields;
-      }
-
-      columns = ['id', 'name', 'email', 'created_at', 'updated_at'];
-    }
-
-    this.table.where(where).select(columns)
+    this.table.where(where).select(fields)
       .limit(1)
       .asCallback(done);
   },

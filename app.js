@@ -1,6 +1,8 @@
 var fs = require('fs');
 var async = require('async');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser')
+var session = require('express-session');
 var express = require('express');
 var nunjucks = require('nunjucks')
 var knex = require('knex');
@@ -15,6 +17,8 @@ app.models = {};
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
+app.use(session({secret: app.config.session.secret, resave: true, saveUninitialized: true}));
 
 module.exports = app; // for chai test in test/app.js
 

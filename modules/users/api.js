@@ -17,3 +17,10 @@ router.post('/login',
     return res.send('success');
   }
 );
+
+router.get('/me', function(req, res) {
+  if (!req.user) {
+    return res.sendStatus(401);
+  }
+  return res.json(req.user);
+});

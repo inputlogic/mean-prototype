@@ -40,7 +40,7 @@ passport.serializeUser(function(user, done) {
 
 // Get user info from request session
 passport.deserializeUser(function(id, done) {
-  app.models.users.findOne({id: id}, function(err, users) {
+  app.models.users.findOne({id: id}, '*', function(err, users) {
     if (err) {
       return done(err);
     }

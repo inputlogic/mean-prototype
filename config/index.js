@@ -16,7 +16,11 @@ var common = {
    */
   modules: [
     {name: 'users', route: '/users'}
-  ]
+  ],
+
+  session: {
+    secret: 'abcdef'
+  }
 };
 
 
