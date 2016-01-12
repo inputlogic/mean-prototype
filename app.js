@@ -20,8 +20,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(session({secret: app.config.session.secret, resave: true, saveUninitialized: true}));
 
-module.exports = app; // for chai test in test/app.js
-
 nunjucks.configure('views', {
   autoescape: true,
   express: app
