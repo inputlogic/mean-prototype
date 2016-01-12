@@ -8,6 +8,7 @@ var nunjucks = require('nunjucks')
 var knex = require('knex');
 var config = require('./config');
 var winston = require('./libs/helpers/winston');
+var fileExists = require('./libs/helpers/fileExists');
 var db = knex(config.db);
 
 app = express();
@@ -122,13 +123,6 @@ function loadModuleController(module, next) {
       app.use(module.route, require(controllerFile))
     }
     return next();
-  });
-}
-
-function fileExists(file, done) {
-  fs.stat(file, function(err, stat) {
-    if(err && err.code == 'ENOENT') return done(false);
-    return done(true);
   });
 }
 
