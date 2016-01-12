@@ -1,6 +1,7 @@
 var express = require('express');
 // var Users = require('./model');
 var router = express.Router();
+var passport = require('passport');
 
 module.exports = router;
 
@@ -9,3 +10,10 @@ router.post('/create', function(req, res) {
     return res.json({user_id: rows[0]});
   });
 });
+
+router.post('/login', 
+  passport.authenticate('local'),
+  function(req, res) {
+    return res.send('success');
+  }
+);
