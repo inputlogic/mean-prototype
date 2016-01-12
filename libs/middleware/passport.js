@@ -10,24 +10,27 @@ passport.use(new LocalStrategy({
     passwordField: 'password'
   },
   function(username, password, done) {
-    app.models.users.findOne({email: username}, ['email', 'password'])
-      .then(function(rows) {
-        var user = rows[0];
+    app.models.users.findOne({email: username}, ['id', 'email', 'password'], function(err, users) {
+      var user = users[0];
 
-        if (!user) {
-          return done(null, false, { message: 'Incorrect username.' });
+      if (err) {
+        return done(err);
+      }
+
+      if (!user) {
+        return done(null, false, { message: 'Incorrect username.' });
+      }
+
+      bcrypt.compare(password, user.password, function(err, res) {
+        if (!res) {
+          return done(null, false, { message: 'Incorrect password.' });
         }
 
-        bcrypt.compare(password, user.password, function(err, res) {
-          if (!res) {
-            return done(null, false, { message: 'Incorrect password.' });
-          }
+        delete user.password;
 
-          delete user.password;
-
-          return done(null, user);
-        });
+        return done(null, user);
       });
+    });
   }
 ));
 
@@ -37,11 +40,12 @@ passport.serializeUser(function(user, done) {
 
 // Get user info from request session
 passport.deserializeUser(function(id, done) {
-  app.models.users.where({id: id}).select('id', 'name', 'email', 'created_at', 'updated_at')
-    .then(function(users) {
-      done(null, users[0]);
-    })
-    .catch(function(err) {
-      done(err, null);
-    });
+  app.models.users.findOne({id: id}, function(err, users) {
+    if (err) {
+      return done(err);
+    }
+    else {
+      return done(null, users[0]);
+    }
+  });
 });
