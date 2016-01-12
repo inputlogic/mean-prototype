@@ -8,8 +8,10 @@ Project base for MySQL, Express and Angular built on Node (aka: MEAN)
 - `app.js`
 - `config/`
   - `index.js`
+  - `local.js`
   - `development.js`
   - `production.js`
+  - `test.js`
 - `libs/`
   - `helpers/`
   - `middleware/`
@@ -46,6 +48,10 @@ Example:
 var config = require('./config');
 ```
 
+Configs set in `local.js` are ignored by Git and will override all other
+configs. This is to set your own configs for database setup etc.
+
+
 ## libs/helpers/
 
 Contains app-wide helper functions for use throught the app. These are typically
@@ -67,7 +73,7 @@ the `middleware` config array.
 Example:
 
 ```javascript
-middleware: ['logHttpRequest', 'isLoggedIn']
+middleware: ['abort', logHttpRequest', 'isLoggedIn']
 ```
 
 The above would load the `logHttpRequest` and `isLoggedIn` middleware for every
