@@ -13,7 +13,7 @@ router.post('/create', function(req, res) {
   });
 });
 
-router.post('/login', 
+router.post('/login',
   passport.authenticate('local'),
   function(req, res) {
     return res.send('success');
