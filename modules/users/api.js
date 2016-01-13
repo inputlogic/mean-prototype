@@ -36,6 +36,10 @@ router.delete('/me', function(req, res) {
 	if(!req.user) return res.sendStatus(401);
 
 	app.models.users.delete(req.user.id, function(err, result) {
-		return (err) ? res.abort(500) : res.json(req.user);
+		if (err) {
+      return res.abort(500)
+    }
+    req.logout();
+    res.json(req.user);
 	});
 });
