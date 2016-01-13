@@ -24,6 +24,14 @@ router.get('/me', function(req, res) {
 	return (!req.user) ? res.sendStatus(401) : res.json(req.user);
 });
 
+router.put('/me', function(req, res){
+	if(!req.user) return res.sendStatus(401);
+
+	app.models.users.update(req.user.id, req.body, function(err, result){
+		return (err) ? res.abort(500) : res.json(result); //TODO: should result be user?
+	})
+});
+
 router.delete('/me', function(req, res) {
 	if(!req.user) return res.sendStatus(401);
 

@@ -40,6 +40,15 @@ describe('users', function(){
 			.expect(200, done);
 	});
 
+	it('should update user', function(done){
+		var data = {name: 'Sir Butt Chicken'};
+
+		agent
+			.put("/me")
+			.send(data)
+			.expect(200, done);
+	});
+
 	it('should delete logged in user', function(done){
 		agent
 			.del("/me")

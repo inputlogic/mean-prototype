@@ -90,6 +90,21 @@ module.exports = {
     }
   },
 
+	update: function update(id, data, done){
+		var self = this;
+
+		//TODO validate data
+
+		updateUser();
+
+		function updateUser(){
+			self.table()
+				.where('id', id)
+				.update(data)
+				.asCallback(done);
+		}
+	},
+
 	delete: function del(id, done){
 		var self = this;
 
