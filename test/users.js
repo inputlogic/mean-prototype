@@ -55,4 +55,16 @@ describe('users', function(){
 			.expect(200, done);
 	});
 
+	it("shouldn't update user that's been deleted", function(done){
+		agent
+			.put("/me")
+			.expect(401, done);
+	});
+
+	it("shouldn't update user that isn't logged in", function(done){
+		request(API_URL)
+      .put("/me")
+			.expect(401, done);
+	});
+
 });
