@@ -10,6 +10,7 @@ var passport = require('passport');
 var config = require('./config');
 var winston = require('./libs/helpers/winston');
 var fileExists = require('./libs/helpers/fileExists');
+var validation = require('./libs/helpers/validation');
 
 var db = knex(config.db);
 
@@ -85,6 +86,7 @@ function loadModelFile(name, modelFile, next) {
   model.table = function() {
     return db(model.tableName);
   };
+  model.validate = validation;
 
   if(typeof model.schema !== 'function') {
     return next(new Error('Schema not defined for model: ' + name));

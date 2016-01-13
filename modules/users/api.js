@@ -6,6 +6,9 @@ module.exports = router;
 
 router.post('/create', function(req, res) {
   app.models.users.create(req.body, function(err, rows) {
+    if (err) {
+      return res.status(err.status).send(err);
+    }
     return res.json({user_id: rows[0]});
   });
 });

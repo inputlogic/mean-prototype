@@ -6,16 +6,30 @@ module.exports = {
   schema: function schema(table) {
     table.increments();
     table.string('name').notNullable();
-    table.string('email').notNullable();
+    table.string('email').unique().notNullable();
     table.string('password').notNullable();
     table.timestamps();
+  },
+
+  validation: {
+    name: {
+      required: true
+    },
+    email: {
+      required: true,
+      unique: true
+    },
+    password: {
+      required: true,
+      minLength: 8
+    }
   },
 
   // Helper for findOneBy[...] queries 
   //
   // where - an object of query parameters
   // fields (optional) - an array of columns to select
-  _findOneBy: function findOneBy(where, fields, done) {
+  _findOneBy: function _findOneBy(where, fields, done) {
 
     var select;
 
@@ -51,19 +65,62 @@ module.exports = {
 
     var self = this;
 
-    bcrypt.hash(data.password, 10, function(err, hash) {
-
+    this.validate(data, function(err) {
       if (err) {
-        return done(err, null);
+        return done(err);
       }
-
-      var datestamp = new Date();
-      data.created_at = datestamp;
-      data.updated_at = datestamp;
-      data.password = hash;
-
-      self.table().insert(data)
-        .asCallback(done);
+      return createUser();
     });
+
+    function createUser() {
+      bcrypt.hash(data.password, 10, function(err, hash) {
+
+        if (err) {
+          return done(err, null);
+        }
+
+        var datestamp = new Date();
+        data.created_at = datestamp;
+        data.updated_at = datestamp;
+        data.password = hash;
+
+        self.table().insert(data)
+          .asCallback(done);
+      });
+    }
   }
+
+  // _validate: function _validate(data, done) {
+
+  //   var errors = [];
+
+  //   if (!data.email) {
+  //     errors.push({email: 'Required field'});
+  //   }
+  //   else if (!validator.isEmail(data.email)) {
+  //     errors.push({email: 'Not a valid email'});
+  //   }
+
+  //   if (!data.name) {
+  //     errors.push({name: 'Required field'})
+  //   }
+
+  //   if (!data.password) {
+  //     errors.push({name: 'Required field'})
+  //   }
+  //   else if (!validator.isLength(data.password, 8)) {
+  //     errors.push({name: 'Must be at least 8 characters'});
+  //   }
+
+  //   if (errors.length === 0) {
+  //     return done();
+  //   }
+  //   var err = new Error('Invalid fields');
+
+  //   err.invalidFields = errors;
+
+  //   err.status = 400;
+
+  //   return done(err);
+  // }
 };
