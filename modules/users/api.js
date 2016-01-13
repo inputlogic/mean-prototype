@@ -21,8 +21,13 @@ router.post('/login',
 );
 
 router.get('/me', function(req, res) {
-  if (!req.user) {
-    return res.sendStatus(401);
-  }
-  return res.json(req.user);
+	return (!req.user) ? res.sendStatus(401) : res.json(req.user);
+});
+
+router.delete('/me', function(req, res) {
+	if(!req.user) return res.sendStatus(401);
+
+	app.models.users.delete(req.user.id, function(err, result) {
+		return (err) ? res.abort(500) : res.json(req.user);
+	});
 });

@@ -25,7 +25,7 @@ module.exports = {
     }
   },
 
-  // Helper for findOneBy[...] queries 
+  // Helper for findOneBy[...] queries
   //
   // where - an object of query parameters
   // fields (optional) - an array of columns to select
@@ -88,7 +88,20 @@ module.exports = {
           .asCallback(done);
       });
     }
-  }
+  },
+
+	delete: function del(id, done){
+		var self = this;
+
+		deleteUser();
+
+		function deleteUser(){
+			self.table()
+				.where('id', id)
+				.del()
+				.asCallback(done);
+		}
+	}
 
   // _validate: function _validate(data, done) {
 
