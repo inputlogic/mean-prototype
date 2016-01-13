@@ -7,6 +7,7 @@ module.exports = function(data, done) {
 
   var table = self.table();
 
+  // Go through each field and process rules
   var fields = Object.keys(this.validation);
 
   var invalidFields = {};
@@ -46,6 +47,7 @@ module.exports = function(data, done) {
   });
 }
 
+// Go through each rule and check against given value
 function processRules(table, field, rules, value, done) {
 
   async.map(Object.keys(rules), function(rule, callback) {
@@ -70,6 +72,7 @@ function processRules(table, field, rules, value, done) {
   });
 }
 
+// Write validation rules here
 function validateRule(table, field, rule, param, value, done) {
   switch(rule) {
     case 'minLength':
@@ -98,6 +101,7 @@ function validateRule(table, field, rule, param, value, done) {
 
       query[field] = value;
 
+      // We can check against the database (for uniqueness, etc.)
       return table.where(query).count('id')
         .asCallback(function(err, result) {
 
