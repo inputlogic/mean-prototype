@@ -20,6 +20,13 @@ router.post('/login',
   }
 );
 
+router.post('/logout', function(req, res){
+  if(!req.user) return res.sendStatus(401);
+
+  req.logout();
+  res.json(req.user);
+});
+
 router.get('/me', function(req, res) {
 	return (!req.user) ? res.sendStatus(401) : res.json(req.user);
 });

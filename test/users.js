@@ -40,6 +40,25 @@ describe('users', function(){
 			.expect(200, done);
 	});
 
+
+	it('should logout user', function(done){
+		agent
+			.post("/logout")
+			.expect(200, done);
+	});
+
+	it('should login user', function(done){
+		var user = {
+			email: 'buttchicken@example.com',
+			password: 'password'
+		};
+
+		agent
+			.post("/login")
+			.send(user)
+			.expect(200, done);
+	});
+
 	it('should update user', function(done){
 		var data = {name: 'Sir Butt Chicken'};
 
