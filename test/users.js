@@ -3,7 +3,6 @@ var request = require('supertest');
 const API_URL = "http://localhost:3000/api/users";
 
 var agent = request.agent(API_URL);
-var userId;
 
 describe('users', function(){
 	it('should create user', function(done){
@@ -16,9 +15,6 @@ describe('users', function(){
 		request(API_URL)
 			.post("/create")
 			.send(user)
-			.expect(function(res){
-				userId = res.body.user_id;
-			})
 			.expect(200, done);
 	});
 
