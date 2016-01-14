@@ -43,6 +43,18 @@ describe('users', function(){
 			.expect(200, done);
 	});
 
+	it("shouldn't login user with invalid details", function(done){
+		var user = {
+			email: 'buttchicken@example.com',
+			password: 'buttchicken'
+		};
+
+		agent
+			.post("/login")
+			.send(user)
+			.expect(401, done);
+	});
+
 	it('should login user', function(done){
 		var user = {
 			email: 'buttchicken@example.com',
