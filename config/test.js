@@ -1,4 +1,5 @@
 module.exports = {
+  middleware: ['passport'],
   db: {
     client: 'mysql2',
     connection: {
@@ -7,12 +8,11 @@ module.exports = {
       password: "express",
       database: "prototype"
     },
-    debug: false
+    debug: true
   },
-	logging:{
-		morgan: 'dev',
-		winston: {
-			level: 'debug'
-		}
-	}
+  logging:{
+    winston: {
+      level: 'warn'
+    }
+  }
 };

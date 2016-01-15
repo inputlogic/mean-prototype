@@ -9,14 +9,18 @@ var common = {
   /**
    * Middleware defined in /libs/middleware to be loaded on every request.
    */
-  middleware: ['isLoggedIn', 'morgan'],
+  middleware: ['abort', 'morgan', 'passport'],
 
   /**
    * Modules defined in /modules to be loaded on every request.
    */
   modules: [
     {name: 'users', route: '/users'}
-  ]
+  ],
+
+  session: {
+    secret: 'abcdef'
+  }
 };
 
 
@@ -27,7 +31,8 @@ for(var k in e) {
   common[k] = e[k];
 }
 
-if(common.env == 'development'){
+// If we're not running in production, override any configs from local.js
+if(common.env != 'production'){
 	try{
 		fs.statSync('./config/local.js');
 		var local = require('./local.js');
