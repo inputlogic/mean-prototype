@@ -1,6 +1,6 @@
 # Prototype
 
-Project base for MySQL, Express and Angular built on Node (aka: MEAN)
+Project base for MongoDB, Express and Angular built on Node (aka: MEAN)
 
 
 ## Structure Overview
@@ -127,8 +127,7 @@ can be called to perform queries on the model.
 Example:
 
 ```javascript
-var users = require('./modules/users/model');
-users.findAll(function(err, allUsers) {
+app.models.users.findAll(function(err, allUsers) {
   // ...
 });
 ```
