@@ -1,10 +1,14 @@
 var async = require('async');
 var bcrypt = require('bcrypt');
+var ObjectId = require('mongodb').ObjectID;
 var schemakit = require('schemakit');
 
 module.exports = {
-  findOneById: findOneById,
-  findOneByEmail: findOneByEmail
+  findById: findById,
+  findByAuth: findByAuth,
+  create: create,
+  update: update,
+  del: del
 };
 
 var users = app.db.collection('users');
@@ -29,33 +33,50 @@ var schema = {
   }
 };
 
-function findOneById(id, fields, done) {
-  return _findOneBy({id: id}, fields, done);
+function findById(_id, done) {
+  users.findOne(ObjectId(_id), done);
 }
 
-function findOneByEmail(email, fields, done) {
-  return _findOneBy({email: email}, fields, done);
-}
+function findByAuth(email, password, done) {
+  return async.waterfall([_find, _comparePass], done);
 
-function findAll(done) {
-  return knex(tableName).select(['id', 'name', 'email', 'created_at', 'updated_at'])
-    .asCallback(done);
+  function _find(next) {
+    users.findOne({email: email}, next);
+  }
+
+  function _comparePass(user, next) {
+    bcrypt.compare(password, user.password, function(err, result) {
+      if (err) return next(err);
+      if (!result) return next(); // Hash doesn't match
+      next(null, user);
+    });
+  }
 }
 
 function create(data, done) {
-  return async.waterfall([
-    function hashPassword(next) {
-      bcrypt.hash(data.password, 10, function(err, hash) {
-        if (err) return next(err);
-        data.password = hash;
-        return next();
-      });
-    },
-    function validate(next) {
-      return schemakit.validate(schema, data);
-    },
-    function createUser(next) {
-      return knex(tableName).insert(data).asCallback(next);
-    }
-  ], done);
+  return async.waterfall([_hashPass, _validate, _insert], done);
+
+  function _hashPass(next) {
+    bcrypt.hash(data.password, 10, function(err, hash) {
+      if (err) return next(err);
+      data.password = hash;
+      next();
+    });
+  }
+
+  function _validate(next) {
+    schemakit.validate(schema, data, next);
+  }
+
+  function _insert(next) {
+    users.insertOne(data, next);
+  }
+}
+
+function update(_id, data, done) {
+  users.updateOne({_id: ObjectId(_id)}, {$set: data}, done);
+}
+
+function del(_id, done) {
+  users.deleteOne({_id: ObjectId(_id)}, done);
 }

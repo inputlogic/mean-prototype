@@ -1,6 +1,9 @@
 module.exports = {
   middleware: ['passport'],
-  db: 'mongodb://localhost:27017/prototype-test',
+  db: {
+    path: 'mongodb://localhost:27017/prototype',
+    options: null
+  },
   logging:{
     winston: {
       level: 'warn'

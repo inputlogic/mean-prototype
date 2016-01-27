@@ -87,6 +87,7 @@ function loadModuleModels(module, next) {
 
 function loadModelFile(name, modelFile, done) {
   var model = require(modelFile);
+  app.models[name] = model;
   if (typeof model.init === 'function') {
     return model.init(done);
   }
