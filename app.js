@@ -1,23 +1,21 @@
 var fs = require('fs');
 var async = require('async');
 var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser')
+var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var express = require('express');
-var nunjucks = require('nunjucks')
-var knex = require('knex');
+var nunjucks = require('nunjucks');
+var mongodb = require('mongodb');
 var passport = require('passport');
 var config = require('./config');
 var winston = require('./libs/helpers/winston');
 var fileExists = require('./libs/helpers/fileExists');
-var validation = require('./libs/helpers/validation');
-
-var db = knex(config.db);
 
 app = express();
 app.config = config;
 app.log = winston(config);
-app.models = {};
+app.db = null; // Set during initDb
+app.models = {}; // Set during loadModules
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -34,11 +32,22 @@ nunjucks.configure('views', {
 });
 
 async.series([
+  initDb,
   loadMiddleware,
   loadModules,
 	load404Handler,
   startServer
 ]);
+
+function initDb(done) {
+  var client = mongodb.MongoClient;
+  client.connect(app.config.db.path, app.config.db.options, function(err, db) {
+    if(err) throw err;
+    app.log.info('Connected to MongoDB:', app.config.db);
+    app.db = db;  
+    return done();
+  });
+}
 
 function loadMiddleware(done) {
   async.each(app.config.middleware, function(m, next) {
@@ -64,42 +73,25 @@ function loadModuleModels(module, next) {
   var modelFile = './modules/' + module.name + '/model.js';
   var modelDirectory = './modules/' + module.name + '/models';
   fileExists(modelFile, function(exists) {
-    if(exists) { // If there's a single model.js file
+    if (exists) { // If there's a single model.js file
       app.log.info('  => model');
       return loadModelFile(module.name, modelFile, next);
-    }
-    else { // If there are multiple model files in a folder
+    } else { // If there are multiple model files in a folder
       fileExists(modelDirectory, function(exists) {
-        if(exists) {
-          return loadModelDirectory(modelDirectory, next);
-        }
+        if (exists) return loadModelDirectory(modelDirectory, next);
         return next();
       });
     }
   });
 }
 
-function loadModelFile(name, modelFile, next) {
+function loadModelFile(name, modelFile, done) {
   var model = require(modelFile);
-	app.models[name] = model;
-  model.db = db; // Attach Knex instance for all models
-  model.table = function() {
-    return db(model.tableName);
-  };
-  model.validate = validation;
-
-  if(typeof model.schema !== 'function') {
-    return next(new Error('Schema not defined for model: ' + name));
+  app.models[name] = model;
+  if (typeof model.init === 'function') {
+    return model.init(done);
   }
-
-  db.schema.createTableIfNotExists(model.tableName, model.schema)
-    .then(function(result) {
-      return next();
-    })
-    .catch(function(err) {
-      app.log.error(err);
-      return next(err);
-    });
+  return done();
 }
 
 function loadModelDirectory(modelDirectory, next) {
@@ -115,7 +107,7 @@ function loadModelDirectory(modelDirectory, next) {
 function loadModuleApi(module, next) {
   var apiFile = './modules/' + module.name + '/api.js';
   fileExists(apiFile, function(exists) {
-    if(exists) {
+    if (exists) {
       var apiRoute = '/api' + module.route;
       app.log.info('  => api:', apiRoute);
       app.use(apiRoute, require(apiFile));
@@ -127,7 +119,7 @@ function loadModuleApi(module, next) {
 function loadModuleController(module, next) {
   var controllerFile = './modules/' + module.name + '/controller.js';
   fileExists(controllerFile, function(exists) {
-    if(exists) {
+    if (exists) {
       app.log.info('  => controller:', module.route);
       app.use(module.route, require(controllerFile))
     }
@@ -138,7 +130,7 @@ function loadModuleController(module, next) {
 function loadModulePassport(module, next) {
   var passportFile = './modules/' + module.name + '/passport.js';
   fileExists(passportFile, function(exists) {
-    if(exists) {
+    if (exists) {
       app.log.info('  => passport strategy');
       require(passportFile);
     }
@@ -154,12 +146,22 @@ function load404Handler(next){
 	next();
 }
 
-
 function startServer() {
-  if(process.env.NODE_ENV == 'test') return; // Don't start server if we're running test suite
+  if (process.env.NODE_ENV == 'test') return; // Don't start server if we're running test suite
   var server = app.listen(app.config.port || 3000, function () {
     var host = server.address().address;
     var port = server.address().port;
     app.log.info('Listening at http://%s:%s in %s mode',  host, port, app.config.env);
   });
 }
+
+function cleanup() {
+  if (cleanup.ran) return;
+  cleanup.ran = true;
+  app.log.info('Cleaning up...');
+  app.db.close(); 
+  return process.exit();
+}
+
+process.on('SIGINT', cleanup);
+process.on('SIGTERM', cleanup);

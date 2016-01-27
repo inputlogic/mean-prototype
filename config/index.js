@@ -19,7 +19,7 @@ var common = {
   ],
 
   session: {
-    secret: 'abcdef'
+    secret: 'buttchicken'
   }
 };
 
