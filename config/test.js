@@ -1,15 +1,6 @@
 module.exports = {
   middleware: ['passport'],
-  db: {
-    client: 'mysql2',
-    connection: {
-      host: "127.0.0.1",
-      user: "express",
-      password: "express",
-      database: "prototype"
-    },
-    debug: true
-  },
+  db: 'mongodb://localhost:27017/prototype-test',
   logging:{
     winston: {
       level: 'warn'

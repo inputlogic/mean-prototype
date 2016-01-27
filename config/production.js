@@ -1,13 +1,7 @@
 module.exports = {
   db: {
-    client: 'mysql2',
-    connection: {
-      host: null,
-      user: null,
-      password: null,
-      database: null
-    },
-    debug: false
+    path: 'mongodb://',
+    options: null
   },
 	logging: {
 		morgan: 'combined',
