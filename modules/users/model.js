@@ -3,14 +3,6 @@ var bcrypt = require('bcrypt');
 var ObjectId = require('mongodb').ObjectID;
 var schemakit = require('schemakit');
 
-module.exports = {
-  findById: findById,
-  findByAuth: findByAuth,
-  create: create,
-  update: update,
-  del: del
-};
-
 var users = app.db.collection('users');
 var schema = {
   name: {
@@ -31,6 +23,14 @@ var schema = {
       min: 32 // 32 == Must be hash
     }
   }
+};
+
+module.exports = {
+  findById: findById,
+  findByAuth: findByAuth,
+  create: create,
+  update: update,
+  del: del
 };
 
 function findById(_id, done) {
